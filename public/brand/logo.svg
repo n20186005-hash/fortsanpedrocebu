@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" role="img" aria-label="Fort San Pedro Cebu logo">
+  <rect width="420" height="96" rx="14" fill="#193325"/>
+  <g transform="translate(17 16)">
+    <path d="M32 0 60 52H4L32 0Z" fill="none" stroke="#E6C989" stroke-width="4.5" stroke-linejoin="round"/>
+    <path d="M21 51V36c0-6 5-11 11-11s11 5 11 11v15" fill="#193325" stroke="#F7F2E9" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="32" cy="11" r="3.5" fill="#9A482E"/>
+  </g>
+  <text x="98" y="44" fill="#F7F2E9" font-family="Georgia,serif" font-size="28" font-weight="700">Fort San Pedro</text>
+  <text x="99" y="66" fill="#E6C989" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="3">CEBU · SUGBO</text>
+</svg>

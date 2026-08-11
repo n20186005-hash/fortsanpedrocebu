@@ -1,0 +1,388 @@
+---
+import '../styles/global.css';
+
+const site = Astro.site;
+const canonical = site ? new URL(Astro.url.pathname, site).href : undefined;
+const ogImage = site ? new URL('/images/fort-san-pedro-hero.jpg', site).href : '/images/fort-san-pedro-hero.jpg';
+
+const attractionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': ['TouristAttraction', 'LocalBusiness'],
+  name: 'Fort San Pedro',
+  alternateName: 'Kuta sa San Pedro',
+  description: 'Usa ka makasaysayang tatsulok nga kuta sa Cebu City, duol sa Plaza Independencia ug pantalan.',
+  ...(canonical ? { url: canonical, image: new URL('/images/fort-san-pedro-hero.jpg', site).href } : {}),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '7WR4+X7J, A. Pigafetta Street',
+    addressLocality: 'Cebu City',
+    addressRegion: 'Cebu',
+    postalCode: '6000',
+    addressCountry: 'PH'
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 10.292619,
+    longitude: 123.905552
+  },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '08:00', closes: '17:00' }
+  ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '3.8',
+    reviewCount: '1344',
+    bestRating: '5',
+    worstRating: '1'
+  },
+  priceRange: '₱40–₱50'
+};
+
+const faqs = [
+  { q: 'Pila ang entrance fee sa Fort San Pedro?', a: 'Ang kasamtangang regular nga entrance fee nga gipatik sa lokal nga balita mao ang ₱50; ₱40 alang sa estudyante ug senior citizen. Maayong kumpirmahon gihapon sa entrance kay mahimong mausab ang polisiya.' },
+  { q: 'Unsa orasa bukas ang kuta?', a: 'Ang kasamtangang Google Maps listing nagpakita og 8:00 AM–5:00 PM adlaw-adlaw. Ang oras mahimong mausab sa holidays, events, o maintenance.' },
+  { q: 'Pila ka oras ang igo para sa pagbisita?', a: 'Alang sa kadaghanan, 45–90 minutos igo na para sa courtyard, ramparts, mga kanyon, ug mga display. Dugangi og oras kon apilon nimo ang Plaza Independencia ug ubang heritage sites sa downtown.' },
+  { q: 'Pwede ra ba lakawon gikan sa Magellan’s Cross?', a: 'Oo. Ang Fort San Pedro, Plaza Independencia, Basilica del Santo Niño, ug Magellan’s Cross naa sa parehas nga downtown heritage area ug praktikal nga i-combine sa usa ka walking route.' },
+  { q: 'Aduna bay parking?', a: 'Adunay parking sa palibot sa Plaza Independencia, apan limitado ang espasyo ug mahimong mapuno. Mas sayon kasagaran ang taxi/Grab o pag-abot sayo.' },
+  { q: 'Maayo ba ang Fort San Pedro para sa bata ug senior?', a: 'Ang ubos nga courtyard sayon ra ma-access, apan ang pipila ka hagdanan ug rampart sections adunay uneven nga bato. Paghinay ug pangayo og tabang kon kinahanglan.' }
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } }))
+};
+
+const nearby = [
+  { id: 'plaza', name: 'Plaza Independencia', type: 'Parke · tupad ra', text: 'Halapad nga green space sa gawas mismo sa kuta—maayo para mopahuway ug magsugod sa heritage walk.' },
+  { id: 'magellans-cross', name: 'Magellan’s Cross', type: 'Heritage · downtown', text: 'Usa sa pinakaila nga landmark sa Cebu, sulod sa mubo nga lakaw gikan sa fort.' },
+  { id: 'basilica', name: 'Basilica Minore del Santo Niño', type: 'Simbahan · heritage', text: 'Importante nga relihiyoso ug makasaysayang site sa sentro sa karaang Cebu.' },
+  { id: 'museum-cebu', name: 'National Museum of the Philippines – Cebu', type: 'Museyo · A. Pigafetta', text: 'Duol nga museyo nga maayo i-pares sa fort para sa mas lawom nga konteksto sa kasaysayan sa Cebu.' },
+  { id: 'cathedral', name: 'Cebu Metropolitan Cathedral', type: 'Simbahan · downtown', text: 'Usa pa ka prominenteng stop sa heritage core sa Cebu City.' },
+  { id: 'casa-gorordo', name: 'Casa Gorordo Museum', type: 'Museyo · Parian', text: 'Heritage house nga nagpakita sa domestic life ug arkitektura sa karaang Cebu.' }
+];
+
+const food = [
+  { name: 'KKD STK + BBQ', style: 'Sugba · seafood · Filipino', note: 'Praktikal nga stop duol sa Fort San Pedro para sa grilled seafood, barbecue ug classic Filipino dishes.' },
+  { name: 'Manila Foodshoppe', style: 'Chinese–Filipino', note: 'Old-school downtown favorite para sa noodles, dim sum ug family-style nga pagkaon.' },
+  { name: 'Alvar’s Food Haus', style: 'Lutong-bahay · budget', note: 'Simple ug budget-friendly nga pagkaon duol sa port area; maayo kung gusto kag dali nga local meal.' }
+];
+---
+<!doctype html>
+<html lang="ceb">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fort San Pedro Cebu | Giya sa Pagbisita</title>
+    <meta name="description" content="Cebuano nga giya sa Fort San Pedro: entrance fee, oras, transport, parking, duol nga pagkaon, heritage stops, mapa ug itinerary checklist." />
+    <meta name="theme-color" content="#193325" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Fort San Pedro Cebu | Giya sa Pagbisita" />
+    <meta property="og:description" content="Planohi ang imong pagbisita sa pinakailang Spanish-era stone fort sa Cebu City." />
+    <meta property="og:image" content={ogImage} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:locale" content="ceb_PH" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script type="application/ld+json" set:html={JSON.stringify(attractionJsonLd)}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)}></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HXM22WWPKP');
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Adto sa sulod</a>
+
+    <header class="absolute inset-x-0 top-0 z-30 text-white">
+      <div class="section-shell flex items-center justify-between py-5">
+        <a href="#top" class="flex items-center gap-3" aria-label="Fort San Pedro home">
+          <img src="/brand/logo-mark.svg" alt="" width="42" height="42" class="h-10 w-10" />
+          <span class="leading-none">
+            <span class="heritage-serif block text-lg font-bold">Fort San Pedro</span>
+            <span class="mt-1 block text-[10px] font-bold uppercase tracking-[.2em] text-white/65">Cebu · Sugbo</span>
+          </span>
+        </a>
+        <nav aria-label="Pangunang nabigasyon" class="hidden items-center gap-6 text-sm font-semibold md:flex">
+          <a class="hover:text-[var(--gold)]" href="#bisita">Pagbisita</a>
+          <a class="hover:text-[var(--gold)]" href="#transport">Transport</a>
+          <a class="hover:text-[var(--gold)]" href="#duol">Duol</a>
+          <a class="rounded-full border border-white/35 bg-black/15 px-4 py-2 backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]" href="#itinerary">Akong itinerary</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section id="top" class="relative min-h-[760px] overflow-hidden bg-[var(--moss-deep)] text-white">
+        <img src="/images/fort-san-pedro-hero.jpg" alt="Pangunang entrada sa Fort San Pedro sa Cebu City" class="absolute inset-0 h-full w-full object-cover" fetchpriority="high" />
+        <div class="absolute inset-0 bg-gradient-to-r from-[#10251c]/95 via-[#10251c]/66 to-[#10251c]/20"></div>
+        <div class="absolute inset-0 stone-texture"></div>
+        <div class="battlement absolute inset-x-0 bottom-0 h-5 opacity-95"></div>
+
+        <div class="section-shell relative z-10 flex min-h-[760px] items-end pb-24 pt-36">
+          <div class="max-w-4xl">
+            <p class="mb-5 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[.22em] text-[#e6c989]">
+              <span class="inline-block h-px w-10 bg-[#e6c989]"></span> Kuta sa San Pedro · Cebu City
+            </p>
+            <h1 class="max-w-3xl text-[clamp(4rem,11vw,8.5rem)] font-bold leading-[.78] tracking-[-.06em]">Bato, dagat,<br /><span class="italic text-[#e6c989]">ug kasaysayan.</span></h1>
+            <p class="mt-8 max-w-2xl text-lg leading-8 text-white/82 md:text-xl">Usa ka compact nga triangular stone fort sa daplin sa Plaza Independencia—usa ka kusgan nga pagsugod sa imong heritage walk sa downtown Cebu.</p>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a href="#bisita" class="rounded-full bg-[#e6c989] px-6 py-3 text-sm font-extrabold text-[#193325] transition hover:-translate-y-0.5">Planoha ang pagbisita</a>
+              <a href="#mapa" class="rounded-full border border-white/35 bg-white/8 px-6 py-3 text-sm font-bold backdrop-blur transition hover:bg-white hover:text-[#193325]">Tan-awa ang mapa</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute bottom-5 right-4 z-10 hidden max-w-[440px] grid-cols-3 divide-x divide-white/20 border border-white/20 bg-[#10251c]/82 backdrop-blur md:grid lg:right-[calc((100%-1180px)/2)]">
+          <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">Regular</span><strong class="heritage-serif mt-1 block text-2xl">₱50</strong></div>
+          <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">Kasamtangang oras</span><strong class="heritage-serif mt-1 block text-2xl">8–5</strong></div>
+          <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">Igo nga oras</span><strong class="heritage-serif mt-1 block text-2xl">45–90m</strong></div>
+        </div>
+      </section>
+
+      <section class="py-20 md:py-28">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+          <div>
+            <p class="eyebrow">Ngano moanhi</p>
+            <h2 class="section-title mt-4">Gamaya ang footprint, dako ang storya.</h2>
+          </div>
+          <div class="grid gap-7 sm:grid-cols-2">
+            <p class="lede sm:col-span-2">Ang Fort San Pedro nagsugod isip depensa sa unang Spanish settlement sa Cebu. Ang kasamtangang stone structure nagdala sa porma sa usa ka triangular bastioned fort—mga pader nga koral-stone, old cannons, garden courtyard ug views gikan sa ramparts.</p>
+            <div class="sm:col-span-2"><button type="button" class="save-place inline-flex items-center gap-2 rounded-full border border-[var(--moss)] px-4 py-2 text-sm font-extrabold text-[var(--moss)] transition hover:bg-[var(--moss)] hover:text-white" data-save-id="fort-san-pedro" data-save-name="Fort San Pedro" aria-pressed="false"><span class="save-icon inline-grid h-6 w-6 place-items-center rounded-full border border-current transition">+</span><span class="save-label">I-save ang Fort sa itinerary</span></button></div>
+            <div class="border-l-2 border-[var(--rust)] pl-5">
+              <div class="heritage-serif text-4xl font-bold text-[var(--moss-deep)]">1565</div>
+              <p class="mt-2 text-sm leading-6 text-[#62685f]">Nagsugod ang unang fortification sa lugar; sa ulahi gihimo ug gipakusog sa bato ang kuta.</p>
+            </div>
+            <div class="border-l-2 border-[var(--gold)] pl-5">
+              <div class="heritage-serif text-4xl font-bold text-[var(--moss-deep)]">1738</div>
+              <p class="mt-2 text-sm leading-6 text-[#62685f]">Ang kasamtangang stone fort kasagarang gi-date sa ika-18 nga siglo, usa sa pinakaklarong Spanish-era military landmarks sa Cebu.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-[#e9e1d2] py-5">
+        <div class="section-shell grid gap-5 md:grid-cols-3">
+          <figure class="image-frame md:translate-y-12 md:rotate-[-1.2deg]">
+            <img src="/images/fort-san-pedro-entrance.jpg" alt="Stone gate ug façade sa Fort San Pedro" class="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+          </figure>
+          <figure class="image-frame md:-translate-y-5 md:rotate-[.8deg]">
+            <img src="/images/fort-san-pedro-courtyard.jpg" alt="Garden courtyard sulod sa Fort San Pedro" class="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+          </figure>
+          <figure class="image-frame md:translate-y-10 md:rotate-[-.5deg]">
+            <img src="/images/fort-san-pedro-cannon.jpg" alt="Karaang kanyon sa Fort San Pedro" class="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+          </figure>
+        </div>
+        <div class="h-8 md:h-20"></div>
+      </section>
+
+      <section id="bisita" class="py-24 md:py-32">
+        <div class="section-shell">
+          <div class="max-w-3xl">
+            <p class="eyebrow">Praktikal nga giya</p>
+            <h2 class="section-title mt-4">Sa dili pa mosulod sa ganghaan.</h2>
+          </div>
+          <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <article class="fort-card p-6 lg:col-span-2">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">Ticket / bayad</span>
+              <div class="mt-6 flex items-end gap-3"><strong class="heritage-serif text-6xl text-[var(--moss-deep)]">₱50</strong><span class="pb-2 text-sm text-[#686d66]">regular</span></div>
+              <p class="mt-4 text-sm leading-6 text-[#575e55]">₱40 alang sa estudyante ug senior citizen sumala sa kasamtangang gipatik nga city fee proposal nga nag-retain sa existing basic rates. Dad-a ang valid ID para sa discounted rate.</p>
+              <p class="mt-3 text-xs font-semibold text-[#7c6d57]">Tip: ang fee mahimong mausab; kumpirmaha sa entrance sa adlaw sa imong bisita.</p>
+            </article>
+            <article class="fort-card p-6">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">Oras</span>
+              <strong class="heritage-serif mt-6 block text-4xl text-[var(--moss-deep)]">8:00 AM<br />– 5:00 PM</strong>
+              <p class="mt-4 text-sm leading-6 text-[#575e55]">Kasamtangang listing: adlaw-adlaw. Holidays, events ug maintenance mahimong makaapekto.</p>
+            </article>
+            <article class="fort-card p-6">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">Stay</span>
+              <strong class="heritage-serif mt-6 block text-5xl text-[var(--moss-deep)]">45–90</strong>
+              <p class="mt-1 text-sm font-bold uppercase tracking-[.15em] text-[#7c6d57]">minutos</p>
+              <p class="mt-4 text-sm leading-6 text-[#575e55]">Igo para sa courtyard, wall walk, kanyon ug display; dugangi kon hilig ka sa history o photography.</p>
+            </article>
+            <article class="fort-card p-6 md:col-span-2">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">Pinakamaayong oras</span>
+              <h3 class="mt-5 text-3xl font-bold text-[var(--moss-deep)]">Sayo sa buntag o ulahi sa hapon</h3>
+              <p class="mt-4 lede !text-base">Mas komportable ang kainit ug mas nindot ang kahayag sa stone walls. Kon gusto nimo og mas hilom nga courtyard, sulayi ang opening hours imbes tunga sa adlaw.</p>
+            </article>
+            <article id="parking" class="fort-card p-6 md:col-span-2">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">Parking</span>
+              <h3 class="mt-5 text-3xl font-bold text-[var(--moss-deep)]">Limitado, busa pag-abot sayo.</h3>
+              <p class="mt-4 lede !text-base">Adunay parking sa palibot sa Plaza Independencia, apan mahimong mapuno labi na sa busy hours ug events. Taxi/Grab ang mas simple kung dili ka gusto mangita og slot.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="transport" class="bg-[var(--moss-deep)] py-24 text-white md:py-32">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.78fr_1.22fr]">
+          <div class="lg:sticky lg:top-10 lg:self-start">
+            <p class="text-xs font-extrabold uppercase tracking-[.2em] text-[#e6c989]">Detailed transport</p>
+            <h2 class="heritage-serif mt-4 text-[clamp(2.5rem,6vw,5.5rem)] font-bold leading-[.9]">Paingon sa kuta.</h2>
+            <p class="mt-6 max-w-md leading-7 text-white/65">I-search sa ride app ang “Fort San Pedro” o “Plaza Independencia.” Ang entrance naa sa A. Pigafetta Street, duol sa Pier 1 ug downtown heritage area.</p>
+          </div>
+          <div class="space-y-8">
+            <article class="route-line grid grid-cols-[2rem_1fr] gap-5 pb-4">
+              <div class="relative z-10 mt-1 grid h-8 w-8 place-items-center rounded-full bg-[#e6c989] text-xs font-black text-[var(--moss-deep)]">01</div>
+              <div><h3 class="text-3xl font-bold">Gikan sa Mactan-Cebu International Airport</h3><p class="mt-3 leading-7 text-white/68"><strong class="text-white">Pinakasayon:</strong> taxi o Grab diretso sa Fort San Pedro / Plaza Independencia. <strong class="text-white">Budget option:</strong> MyBus gikan sa airport paingon sa SM City Cebu, dayon jeepney o taxi/Grab para sa final leg pa-downtown. Ayaw pag-budget og eksaktong travel time kay kusog mausab ang trapiko sa Cebu.</p></div>
+            </article>
+            <article class="route-line grid grid-cols-[2rem_1fr] gap-5 pb-4">
+              <div class="relative z-10 mt-1 grid h-8 w-8 place-items-center rounded-full bg-[#e6c989] text-xs font-black text-[var(--moss-deep)]">02</div>
+              <div><h3 class="text-3xl font-bold">Jeepney / public transport</h3><p class="mt-3 leading-7 text-white/68">Pangitaa ang mga ruta nga moagi sa <strong class="text-white">Plaza Independencia / Pier area</strong>. Ang 12I route nailhan nga nagkonektar sa SM City Cebu ngadto sa Plaza Independencia–Fort San Pedro corridor. Pangutana sa driver o conductor sa dili pa mosakay kay mahimong mausab ang routing.</p></div>
+            </article>
+            <article class="route-line grid grid-cols-[2rem_1fr] gap-5 pb-4">
+              <div class="relative z-10 mt-1 grid h-8 w-8 place-items-center rounded-full bg-[#e6c989] text-xs font-black text-[var(--moss-deep)]">03</div>
+              <div><h3 class="text-3xl font-bold">Taxi / Grab</h3><p class="mt-3 leading-7 text-white/68">Maoy pinakastraightforward gikan sa hotel, IT Park, Ayala o SM. I-pin ang <strong class="text-white">Fort San Pedro, A. Pigafetta Street</strong>. Para sa pickup, mas sayon usahay sa edge sa Plaza Independencia kaysa mismong gate kon daghan ang tawo.</p></div>
+            </article>
+            <article class="route-line grid grid-cols-[2rem_1fr] gap-5">
+              <div class="relative z-10 mt-1 grid h-8 w-8 place-items-center rounded-full bg-[#e6c989] text-xs font-black text-[var(--moss-deep)]">04</div>
+              <div><h3 class="text-3xl font-bold">Gikan sa Cebu Pier 1</h3><p class="mt-3 leading-7 text-white/68">Ang fort naa duol sa port district; gikan sa Pier 1, praktikal ang mubo nga lakaw o dali nga taxi/ride depende sa imong bagahe ug kainit.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="duol" class="py-24 md:py-32">
+        <div class="section-shell">
+          <div class="grid gap-8 lg:grid-cols-[.85fr_1.15fr] lg:items-end">
+            <div><p class="eyebrow">Heritage loop</p><h2 class="section-title mt-4">Ayaw hunong sa fort.</h2></div>
+            <p class="lede">Ang pinakamaayo nga paagi sa pagtan-aw sa Fort San Pedro mao ang pag-combine niini sa karaang downtown Cebu. Daghan sa importante nga landmarks naa sa usa ka compact nga heritage corridor.</p>
+          </div>
+          <div class="mt-12 grid gap-px overflow-hidden border border-[#d5c7ad] bg-[#d5c7ad] sm:grid-cols-2 lg:grid-cols-3">
+            {nearby.map((place, index) => (
+              <article class="bg-[#faf6ed] p-7 transition hover:bg-white">
+                <div class="flex items-start justify-between gap-4"><span class="text-[10px] font-black uppercase tracking-[.18em] text-[var(--rust)]">{place.type}</span><span class="heritage-serif text-3xl text-[#c6b28e]">0{index + 1}</span></div>
+                <h3 class="mt-10 text-2xl font-bold text-[var(--moss-deep)]">{place.name}</h3>
+                <p class="mt-3 text-sm leading-6 text-[#656961]">{place.text}</p>
+                <button type="button" class="save-place mt-6 inline-flex items-center gap-2 text-sm font-extrabold text-[var(--moss)]" data-save-id={place.id} data-save-name={place.name} aria-pressed="false"><span class="save-icon inline-grid h-6 w-6 place-items-center rounded-full border border-current transition">+</span><span class="save-label">I-save sa itinerary</span></button>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="food" class="bg-[#efe7d8] py-24 md:py-28">
+        <div class="section-shell">
+          <div class="max-w-3xl"><p class="eyebrow">Duol nga pagkaon</p><h2 class="section-title mt-4">Human sa bato, kaon.</h2><p class="lede mt-6">Pipila ka practical nga stops sa downtown/port side. Check gihapon ang current opening hours sa restaurant sa dili pa moadto.</p></div>
+          <div class="mt-10 grid gap-5 md:grid-cols-3">
+            {food.map((item) => (
+              <article class="fort-card p-7"><span class="text-[10px] font-black uppercase tracking-[.18em] text-[var(--rust)]">{item.style}</span><h3 class="mt-5 text-2xl font-bold text-[var(--moss-deep)]">{item.name}</h3><p class="mt-4 text-sm leading-6 text-[#5f665d]">{item.note}</p></article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="itinerary" class="py-24 md:py-32">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <p class="eyebrow">Local itinerary</p>
+            <h2 class="section-title mt-4">Himoa imong heritage checklist.</h2>
+            <p class="lede mt-6">I-save ang gusto nimong adtoan. Ang lista gitipigan <strong>lamang sa imong device</strong> pinaagi sa localStorage—walay account, walay upload, walay server.</p>
+            <button id="clear-itinerary" type="button" class="mt-6 text-sm font-bold text-[var(--rust)] underline decoration-dotted underline-offset-4">Tangtanga tanan sa lista</button>
+          </div>
+          <div>
+            <div id="saved-list" class="grid gap-3" aria-live="polite">
+              <p id="empty-itinerary" class="border border-dashed border-[#bba988] p-7 text-[#6a6f66]">Wala pa kay gi-save. I-save ang Fort o pili og stops sa “Duol” nga seksyon.</p>
+            </div>
+            <div class="mt-5 rounded-lg bg-[#edf2ea] p-4 text-xs leading-5 text-[#4c6253]">Privacy note: ang itinerary data magpabilin sa kasamtangang browser/device hangtod imo kining i-clear o i-delete ang browser storage.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mapa" class="map-wrap bg-[#1f3026]">
+        <div class="section-shell grid gap-8 py-14 text-white lg:grid-cols-[.6fr_1.4fr] lg:items-end">
+          <div><p class="text-xs font-extrabold uppercase tracking-[.2em] text-[#e6c989]">Lokasyon</p><h2 class="heritage-serif mt-3 text-4xl font-bold">A. Pigafetta Street,<br />Cebu City 6000</h2><p class="mt-4 text-sm leading-6 text-white/60">Tapad sa Plaza Independencia ug duol sa Cebu Pier 1.</p></div>
+          <div class="text-sm text-white/65 lg:text-right">Coordinates: 10.292619, 123.905552 · Plus Code: 7WR4+X7J</div>
+        </div>
+        <iframe title="Mapa sa Fort San Pedro, Cebu City" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1004324.1474712176!2d122.58348729218027!3d10.489533320078783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99be0deb18889%3A0xcd7afbb07d30a902!2z5Zyj5L2p5b63572X5aCh!5e0!3m2!1sceb!2sph!4v1786413932560!5m2!1sceb!2sph&hl=ceb&region=PH" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </section>
+
+      <section id="faq" class="py-24 md:py-32">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.65fr_1.35fr]">
+          <div><p class="eyebrow">FAQ</p><h2 class="section-title mt-4">Kasagarang pangutana.</h2></div>
+          <div class="divide-y divide-[#d8cab0] border-y border-[#d8cab0]">
+            {faqs.map((item) => (
+              <details class="group py-5">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-extrabold text-[var(--moss-deep)]"><span>{item.q}</span><span class="text-2xl font-light transition group-open:rotate-45">+</span></summary>
+                <p class="max-w-3xl pb-2 pt-4 leading-7 text-[#626860]">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-[#14251c] text-white">
+      <div class="battlement h-4 bg-transparent opacity-70"></div>
+      <div class="section-shell grid gap-10 py-14 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <div class="flex items-center gap-3"><img src="/brand/logo-mark.svg" alt="" width="46" height="46" /><div><div class="heritage-serif text-xl font-bold">Fort San Pedro · Cebu</div><div class="mt-1 text-[10px] font-bold uppercase tracking-[.18em] text-white/45">Independent visitor guide</div></div></div>
+          <p class="mt-5 max-w-2xl text-xs leading-6 text-white/48">Dili kini opisyal nga website sa Fort San Pedro, Cebu City Government, National Museum, o bisan unsang ahensya sa gobyerno. Ang impormasyon alang lamang sa trip planning; kumpirmaha ang current fees, hours ug access rules sa dili pa mobisita.</p>
+          <details class="mt-4 text-xs text-white/50"><summary class="cursor-pointer font-bold text-white/65">Photo credits</summary><p class="mt-2 max-w-3xl leading-5">Hero: xiquinhosilva, CC BY 2.0. Main entrance & courtyard: Eugene Alvin Villar, CC BY-SA 4.0. Cannon: Farro, public domain. Local copies are included in the project; see CREDITS.md for source pages and license notes.</p></details>
+        </div>
+        <a href="#top" class="text-sm font-bold text-[#e6c989]">Balik sa taas ↑</a>
+      </div>
+    </footer>
+
+    <script>
+      const STORAGE_KEY = 'fort-san-pedro-itinerary-v1';
+      type Stop = { id: string; name: string };
+
+      const readStops = (): Stop[] => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+          return Array.isArray(parsed) ? parsed.filter((x): x is Stop => Boolean(x && typeof x.id === 'string' && typeof x.name === 'string')) : [];
+        } catch { return []; }
+      };
+      const writeStops = (stops: Stop[]) => localStorage.setItem(STORAGE_KEY, JSON.stringify(stops));
+      const escapeMap: Record<string, string> = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' };
+      const escapeText = (value: string) => value.replace(/[&<>"']/g, (char) => escapeMap[char] || char);
+
+      const render = () => {
+        const stops = readStops();
+        document.querySelectorAll<HTMLButtonElement>('.save-place').forEach((button) => {
+          const saved = stops.some((stop) => stop.id === button.dataset.saveId);
+          button.setAttribute('aria-pressed', String(saved));
+          const label = button.querySelector<HTMLElement>('.save-label');
+          if (label) label.textContent = saved ? 'Na-save sa itinerary' : 'I-save sa itinerary';
+        });
+        const list = document.querySelector<HTMLElement>('#saved-list');
+        if (!list) return;
+        if (!stops.length) {
+          list.innerHTML = '<p id="empty-itinerary" class="border border-dashed border-[#bba988] p-7 text-[#6a6f66]">Wala pa kay gi-save. I-save ang Fort o pili og stops sa “Duol” nga seksyon.</p>';
+          return;
+        }
+        list.innerHTML = stops.map((stop, index) => `<div class="check-card flex items-center justify-between border border-[#d2c5aa] bg-white p-4" data-saved="true"><div class="flex items-center gap-4"><span class="heritage-serif text-2xl text-[#b7a27e]">${String(index + 1).padStart(2,'0')}</span><strong>${escapeText(stop.name)}</strong></div><button type="button" data-remove-id="${escapeText(stop.id)}" class="remove-stop text-xs font-extrabold text-[#9a482e]">Tangtanga</button></div>`).join('');
+        list.querySelectorAll<HTMLButtonElement>('.remove-stop').forEach((button) => button.addEventListener('click', () => {
+          writeStops(readStops().filter((stop) => stop.id !== button.dataset.removeId));
+          render();
+        }));
+      };
+
+      document.querySelectorAll<HTMLButtonElement>('.save-place').forEach((button) => button.addEventListener('click', () => {
+        const id = button.dataset.saveId;
+        const name = button.dataset.saveName;
+        if (!id || !name) return;
+        const stops = readStops();
+        const exists = stops.some((stop) => stop.id === id);
+        writeStops(exists ? stops.filter((stop) => stop.id !== id) : [...stops, { id, name }]);
+        render();
+      }));
+
+      document.querySelector<HTMLButtonElement>('#clear-itinerary')?.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>
