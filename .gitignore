@@ -1,0 +1,93 @@
+# -----------------------------
+# Dependencies
+# -----------------------------
+node_modules/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# -----------------------------
+# Build output
+# -----------------------------
+dist/
+.output/
+.vercel/
+.netlify/
+.svelte-kit/
+.next/
+.nuxt/
+
+# -----------------------------
+# Astro-specific
+# -----------------------------
+.astro/
+
+# -----------------------------
+# Cloudflare Wrangler
+# -----------------------------
+.wrangler/
+.wrangler.toml.local
+.dev.vars
+
+# -----------------------------
+# Environment & secrets
+# -----------------------------
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# -----------------------------
+# Logs
+# -----------------------------
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# -----------------------------
+# OS / Editor artifacts
+# -----------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# -----------------------------
+# TypeScript / cache
+# -----------------------------
+*.tsbuildinfo
+.cache/
+.parcel-cache/
+
+# -----------------------------
+# Testing / coverage
+# -----------------------------
+coverage/
+.nyc_output/
+*.lcov
+
+# -----------------------------
+# Local config overrides
+# -----------------------------
+*.local

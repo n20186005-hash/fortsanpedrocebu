@@ -1,0 +1,465 @@
+---
+import '../styles/global.css';
+import { translations, type Locale } from '../i18n/translations';
+
+const { locale } = Astro.props as { locale: Locale };
+const t = translations[locale];
+
+const site = Astro.site;
+const canonical = site ? new URL(Astro.url.pathname, site).href : undefined;
+const ogImage = site ? new URL('/images/fort-san-pedro-hero.jpg', site).href : '/images/fort-san-pedro-hero.jpg';
+
+const attractionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': ['TouristAttraction', 'LocalBusiness'],
+  name: t.schema.attractionName,
+  alternateName: t.schema.attractionAlternateName,
+  description: t.schema.attractionDescription,
+  ...(canonical ? { url: canonical, image: new URL('/images/fort-san-pedro-hero.jpg', site).href } : {}),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '7WR4+X7J, A. Pigafetta Street',
+    addressLocality: 'Cebu City',
+    addressRegion: 'Cebu',
+    postalCode: '6000',
+    addressCountry: 'PH'
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 10.292619,
+    longitude: 123.905552
+  },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '08:00', closes: '17:00' }
+  ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '3.8',
+    reviewCount: '1344',
+    bestRating: '5',
+    worstRating: '1'
+  },
+  priceRange: '₱40–₱50'
+};
+
+const faqs = t.faq.items;
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } }))
+};
+
+const nearby = t.nearby.places;
+const food = t.food.items;
+
+const localeKey = locale;
+
+const itineraryLabels = JSON.stringify({
+  saveFort: t.whyVisit.saveButton,
+  saveNearby: nearby[0]?.saveButton || '',
+  saved: t.itinerary.savedLabel,
+  remove: t.itinerary.removeLabel,
+  empty: t.itinerary.emptyState
+});
+---
+<!doctype html>
+<html lang={t.meta.htmlLang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <meta name="theme-color" content="#193325" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="alternate" hreflang="ceb" href={site ? new URL(t.alternates.ceb, site).href : t.alternates.ceb} />
+    <link rel="alternate" hreflang="en" href={site ? new URL(t.alternates.en, site).href : t.alternates.en} />
+    <link rel="alternate" hreflang="fil" href={site ? new URL(t.alternates.fil, site).href : t.alternates.fil} />
+    <link rel="alternate" hreflang="x-default" href={site ? new URL(t.alternates.en, site).href : t.alternates.en} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={t.meta.ogTitle} />
+    <meta property="og:description" content={t.meta.ogDescription} />
+    <meta property="og:image" content={ogImage} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:locale" content={t.meta.ogLocale} />
+    <meta property="og:locale:alternate" content="ceb_PH" />
+    <meta property="og:locale:alternate" content="en_PH" />
+    <meta property="og:locale:alternate" content="fil_PH" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(attractionJsonLd)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(faqJsonLd)}></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HXM22WWPKP');
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.nav.skipToContent}</a>
+
+    <header class="absolute inset-x-0 top-0 z-30 text-white">
+      <div class="section-shell flex items-center justify-between py-5">
+        <a href="#top" class="flex items-center gap-3" aria-label={t.nav.homeLabel}>
+          <img src="/brand/logo-mark.svg" alt="" width="42" height="42" class="h-10 w-10" />
+          <span class="leading-none">
+            <span class="heritage-serif block text-lg font-bold">{t.schema.attractionName}</span>
+            <span class="mt-1 block text-[10px] font-bold uppercase tracking-[.2em] text-white/65">{t.nav.siteTagline}</span>
+          </span>
+        </a>
+        <nav aria-label="Pangunang nabigasyon" class="hidden items-center gap-6 text-sm font-semibold md:flex">
+          <a class="hover:text-[var(--gold)]" href="#bisita">{t.nav.navVisit}</a>
+          <a class="hover:text-[var(--gold)]" href="#transport">{t.nav.navTransport}</a>
+          <a class="hover:text-[var(--gold)]" href="#duol">{t.nav.navNearby}</a>
+          <a class="rounded-full border border-white/35 bg-black/15 px-4 py-2 backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]" href="#itinerary">{t.nav.navItinerary}</a>
+          <div class="relative">
+            <details class="group">
+              <summary class="flex cursor-pointer list-none items-center gap-2 rounded-full border border-white/35 bg-black/15 px-4 py-2 text-sm font-semibold backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span data-lang-label>{t.languageSwitcher[localeKey as 'ceb' | 'en' | 'fil']}</span>
+                <span class="transition group-open:rotate-180">▾</span>
+              </summary>
+              <div class="absolute right-0 z-40 mt-2 w-40 overflow-hidden rounded-xl border border-white/25 bg-[#10251c]/95 py-1 backdrop-blur">
+                <a href={t.alternates.ceb} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'ceb' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇵🇭 {t.languageSwitcher.ceb}</a>
+                <a href={t.alternates.en} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'en' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇬🇧 {t.languageSwitcher.en}</a>
+                <a href={t.alternates.fil} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'fil' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇵🇭 {t.languageSwitcher.fil}</a>
+              </div>
+            </details>
+          </div>
+        </nav>
+        <div class="md:hidden">
+          <details class="group">
+            <summary class="flex cursor-pointer list-none items-center gap-2 rounded-full border border-white/35 bg-black/15 px-4 py-2 text-sm font-semibold backdrop-blur">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span>{t.languageSwitcher[localeKey as 'ceb' | 'en' | 'fil']}</span>
+            </summary>
+            <div class="absolute right-4 z-40 mt-2 w-40 overflow-hidden rounded-xl border border-white/25 bg-[#10251c]/95 py-1 backdrop-blur">
+              <a href={t.alternates.ceb} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'ceb' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇵🇭 {t.languageSwitcher.ceb}</a>
+              <a href={t.alternates.en} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'en' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇬🇧 {t.languageSwitcher.en}</a>
+              <a href={t.alternates.fil} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'fil' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇵🇭 {t.languageSwitcher.fil}</a>
+            </div>
+          </details>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section id="top" class="relative min-h-[760px] overflow-hidden bg-[var(--moss-deep)] text-white">
+        <img src="/images/fort-san-pedro-hero.jpg" alt={t.images.heroAlt} class="absolute inset-0 h-full w-full object-cover" fetchpriority="high" />
+        <div class="absolute inset-0 bg-gradient-to-r from-[#10251c]/95 via-[#10251c]/66 to-[#10251c]/20"></div>
+        <div class="absolute inset-0 stone-texture"></div>
+        <div class="battlement absolute inset-x-0 bottom-0 h-5 opacity-95"></div>
+
+        <div class="section-shell relative z-10 flex min-h-[760px] items-end pb-24 pt-36">
+          <div class="max-w-4xl">
+            <p class="mb-5 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[.22em] text-[#e6c989]">
+              <span class="inline-block h-px w-10 bg-[#e6c989]"></span> {t.hero.eyebrow}
+            </p>
+            <h1 class="max-w-3xl text-[clamp(4rem,11vw,8.5rem)] font-bold leading-[.78] tracking-[-.06em]">{t.hero.headingPrimary}<br /><span class="italic text-[#e6c989]">{t.hero.headingAccent}</span></h1>
+            <p class="mt-8 max-w-2xl text-lg leading-8 text-white/82 md:text-xl">{t.hero.subheading}</p>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a href="#bisita" class="rounded-full bg-[#e6c989] px-6 py-3 text-sm font-extrabold text-[#193325] transition hover:-translate-y-0.5">{t.hero.cta1}</a>
+              <a href="#mapa" class="rounded-full border border-white/35 bg-white/8 px-6 py-3 text-sm font-bold backdrop-blur transition hover:bg-white hover:text-[#193325]">{t.hero.cta2}</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute bottom-5 right-4 z-10 hidden max-w-[440px] grid-cols-3 divide-x divide-white/20 border border-white/20 bg-[#10251c]/82 backdrop-blur md:grid lg:right-[calc((100%-1180px)/2)]">
+          <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">{t.hero.statRegularLabel}</span><strong class="heritage-serif mt-1 block text-2xl">₱50</strong></div>
+          <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">{t.hero.statHoursLabel}</span><strong class="heritage-serif mt-1 block text-2xl">8–5</strong></div>
+          <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">{t.hero.statDurationLabel}</span><strong class="heritage-serif mt-1 block text-2xl">45–90m</strong></div>
+        </div>
+      </section>
+
+      <section class="py-20 md:py-28">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+          <div>
+            <p class="eyebrow">{t.whyVisit.eyebrow}</p>
+            <h2 class="section-title mt-4">{t.whyVisit.title}</h2>
+          </div>
+          <div class="grid gap-7 sm:grid-cols-2">
+            <p class="lede sm:col-span-2">{t.whyVisit.lede}</p>
+            <div class="sm:col-span-2"><button type="button" class="save-place inline-flex items-center gap-2 rounded-full border border-[var(--moss)] px-4 py-2 text-sm font-extrabold text-[var(--moss)] transition hover:bg-[var(--moss)] hover:text-white" data-save-id="fort-san-pedro" data-save-name="Fort San Pedro" aria-pressed="false"><span class="save-icon inline-grid h-6 w-6 place-items-center rounded-full border border-current transition">+</span><span class="save-label">{t.whyVisit.saveButton}</span></button></div>
+            <div class="border-l-2 border-[var(--rust)] pl-5">
+              <div class="heritage-serif text-4xl font-bold text-[var(--moss-deep)]">{t.whyVisit.year1}</div>
+              <p class="mt-2 text-sm leading-6 text-[#62685f]">{t.whyVisit.year1Text}</p>
+            </div>
+            <div class="border-l-2 border-[var(--gold)] pl-5">
+              <div class="heritage-serif text-4xl font-bold text-[var(--moss-deep)]">{t.whyVisit.year2}</div>
+              <p class="mt-2 text-sm leading-6 text-[#62685f]">{t.whyVisit.year2Text}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-[#e9e1d2] py-5">
+        <div class="section-shell grid gap-5 md:grid-cols-3">
+          <figure class="image-frame md:translate-y-12 md:rotate-[-1.2deg]">
+            <img src="/images/fort-san-pedro-entrance.jpg" alt={t.images.entranceAlt} class="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+          </figure>
+          <figure class="image-frame md:-translate-y-5 md:rotate-[.8deg]">
+            <img src="/images/fort-san-pedro-courtyard.jpg" alt={t.images.courtyardAlt} class="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+          </figure>
+          <figure class="image-frame md:translate-y-10 md:rotate-[-.5deg]">
+            <img src="/images/fort-san-pedro-cannon.jpg" alt={t.images.cannonAlt} class="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+          </figure>
+        </div>
+        <div class="h-8 md:h-20"></div>
+      </section>
+
+      <section id="bisita" class="py-24 md:py-32">
+        <div class="section-shell">
+          <div class="max-w-3xl">
+            <p class="eyebrow">{t.visit.eyebrow}</p>
+            <h2 class="section-title mt-4">{t.visit.title}</h2>
+          </div>
+          <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <article class="fort-card p-6 lg:col-span-2">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">{t.visit.ticketLabel}</span>
+              <div class="mt-6 flex items-end gap-3"><strong class="heritage-serif text-6xl text-[var(--moss-deep)]">₱50</strong><span class="pb-2 text-sm text-[#686d66]">regular</span></div>
+              <p class="mt-4 text-sm leading-6 text-[#575e55]">{t.visit.ticketRegularNote}</p>
+              <p class="mt-3 text-xs font-semibold text-[#7c6d57]">{t.visit.ticketTip}</p>
+            </article>
+            <article class="fort-card p-6">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">{t.visit.hoursLabel}</span>
+              <strong class="heritage-serif mt-6 block text-4xl text-[var(--moss-deep)]">8:00 AM<br />– 5:00 PM</strong>
+              <p class="mt-4 text-sm leading-6 text-[#575e55]">{t.visit.hoursNote}</p>
+            </article>
+            <article class="fort-card p-6">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">{t.visit.stayLabel}</span>
+              <strong class="heritage-serif mt-6 block text-5xl text-[var(--moss-deep)]">45–90</strong>
+              <p class="mt-1 text-sm font-bold uppercase tracking-[.15em] text-[#7c6d57]">{t.visit.stayUnit}</p>
+              <p class="mt-4 text-sm leading-6 text-[#575e55]">{t.visit.stayNote}</p>
+            </article>
+            <article class="fort-card p-6 md:col-span-2">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">{t.visit.bestTimeLabel}</span>
+              <h3 class="mt-5 text-3xl font-bold text-[var(--moss-deep)]">{t.visit.bestTimeTitle}</h3>
+              <p class="mt-4 lede !text-base">{t.visit.bestTimeText}</p>
+            </article>
+            <article id="parking" class="fort-card p-6 md:col-span-2">
+              <span class="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--rust)]">{t.visit.parkingLabel}</span>
+              <h3 class="mt-5 text-3xl font-bold text-[var(--moss-deep)]">{t.visit.parkingTitle}</h3>
+              <p class="mt-4 lede !text-base">{t.visit.parkingText}</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="transport" class="bg-[var(--moss-deep)] py-24 text-white md:py-32">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.78fr_1.22fr]">
+          <div class="lg:sticky lg:top-10 lg:self-start">
+            <p class="text-xs font-extrabold uppercase tracking-[.2em] text-[#e6c989]">{t.transport.eyebrow}</p>
+            <h2 class="heritage-serif mt-4 text-[clamp(2.5rem,6vw,5.5rem)] font-bold leading-[.9]">{t.transport.title}</h2>
+            <p class="mt-6 max-w-md leading-7 text-white/65">{t.transport.intro}</p>
+          </div>
+          <div class="space-y-8">
+            {t.transport.routes.map((route, index) => (
+              <article class="route-line grid grid-cols-[2rem_1fr] gap-5 pb-4">
+                <div class="relative z-10 mt-1 grid h-8 w-8 place-items-center rounded-full bg-[#e6c989] text-xs font-black text-[var(--moss-deep)]">{String(index + 1).padStart(2, '0')}</div>
+                <div><h3 class="text-3xl font-bold">{route.title}</h3><p class="mt-3 leading-7 text-white/68" set:html={route.text}></p></div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="duol" class="py-24 md:py-32">
+        <div class="section-shell">
+          <div class="grid gap-8 lg:grid-cols-[.85fr_1.15fr] lg:items-end">
+            <div><p class="eyebrow">{t.nearby.eyebrow}</p><h2 class="section-title mt-4">{t.nearby.title}</h2></div>
+            <p class="lede">{t.nearby.lede}</p>
+          </div>
+          <div class="mt-12 grid gap-px overflow-hidden border border-[#d5c7ad] bg-[#d5c7ad] sm:grid-cols-2 lg:grid-cols-3">
+            {nearby.map((place, index) => (
+              <article class="bg-[#faf6ed] p-7 transition hover:bg-white">
+                <div class="flex items-start justify-between gap-4"><span class="text-[10px] font-black uppercase tracking-[.18em] text-[var(--rust)]">{place.type}</span><span class="heritage-serif text-3xl text-[#c6b28e]">0{index + 1}</span></div>
+                <h3 class="mt-10 text-2xl font-bold text-[var(--moss-deep)]">{place.name}</h3>
+                <p class="mt-3 text-sm leading-6 text-[#656961]">{place.text}</p>
+                <button type="button" class="save-place mt-6 inline-flex items-center gap-2 text-sm font-extrabold text-[var(--moss)]" data-save-id={place.id} data-save-name={place.name} aria-pressed="false"><span class="save-icon inline-grid h-6 w-6 place-items-center rounded-full border border-current transition">+</span><span class="save-label">{place.saveButton}</span></button>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="food" class="bg-[#efe7d8] py-24 md:py-28">
+        <div class="section-shell">
+          <div class="max-w-3xl"><p class="eyebrow">{t.food.eyebrow}</p><h2 class="section-title mt-4">{t.food.title}</h2><p class="lede mt-6">{t.food.lede}</p></div>
+          <div class="mt-10 grid gap-5 md:grid-cols-3">
+            {food.map((item) => (
+              <article class="fort-card p-7"><span class="text-[10px] font-black uppercase tracking-[.18em] text-[var(--rust)]">{item.style}</span><h3 class="mt-5 text-2xl font-bold text-[var(--moss-deep)]">{item.name}</h3><p class="mt-4 text-sm leading-6 text-[#5f665d]">{item.note}</p></article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="itinerary" class="py-24 md:py-32">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <p class="eyebrow">{t.itinerary.eyebrow}</p>
+            <h2 class="section-title mt-4">{t.itinerary.title}</h2>
+            <p class="lede mt-6" set:html={t.itinerary.lede}></p>
+            <button id="clear-itinerary" type="button" class="mt-6 text-sm font-bold text-[var(--rust)] underline decoration-dotted underline-offset-4">{t.itinerary.clearButton}</button>
+          </div>
+          <div>
+            <div id="saved-list" class="grid gap-3" aria-live="polite">
+              <p id="empty-itinerary" class="border border-dashed border-[#bba988] p-7 text-[#6a6f66]" data-empty-text>{t.itinerary.emptyState}</p>
+            </div>
+            <div class="mt-5 rounded-lg bg-[#edf2ea] p-4 text-xs leading-5 text-[#4c6253]">{t.itinerary.privacyNote}</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mapa" class="map-wrap bg-[#1f3026]">
+        <div class="section-shell grid gap-8 py-14 text-white lg:grid-cols-[.6fr_1.4fr] lg:items-end">
+          <div><p class="text-xs font-extrabold uppercase tracking-[.2em] text-[#e6c989]">{t.map.eyebrow}</p><h2 class="heritage-serif mt-3 text-4xl font-bold" set:html={t.map.address}></h2><p class="mt-4 text-sm leading-6 text-white/60">{t.map.note}</p></div>
+          <div class="text-sm text-white/65 lg:text-right">Coordinates: 10.292619, 123.905552 · Plus Code: 7WR4+X7J</div>
+        </div>
+        <iframe title={t.map.iframeTitle} src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1004324.1474712176!2d122.58348729218027!3d10.489533320078783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99be0deb18889%3A0xcd7afbb07d30a902!2z5Zyj5L2p5b63572X5aCh!5e0!3m2!1s${t.meta.htmlLang}!2sph!4v1786413932560!5m2!1s${t.meta.htmlLang}!2sph&hl=${t.meta.htmlLang}&region=PH`} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </section>
+
+      <section id="faq" class="py-24 md:py-32">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.65fr_1.35fr]">
+          <div><p class="eyebrow">{t.faq.eyebrow}</p><h2 class="section-title mt-4">{t.faq.title}</h2></div>
+          <div class="divide-y divide-[#d8cab0] border-y border-[#d8cab0]">
+            {faqs.map((item) => (
+              <details class="group py-5">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-extrabold text-[var(--moss-deep)]"><span>{item.q}</span><span class="text-2xl font-light transition group-open:rotate-45">+</span></summary>
+                <p class="max-w-3xl pb-2 pt-4 leading-7 text-[#626860]">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-[#14251c] text-white">
+      <div class="battlement h-4 bg-transparent opacity-70"></div>
+      <div class="section-shell grid gap-10 py-14 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <div class="flex items-center gap-3"><img src="/brand/logo-mark.svg" alt="" width="46" height="46" /><div><div class="heritage-serif text-xl font-bold">{t.footer.title}</div><div class="mt-1 text-[10px] font-bold uppercase tracking-[.18em] text-white/45">{t.footer.subtitle}</div></div></div>
+          <p class="mt-5 max-w-2xl text-xs leading-6 text-white/48">{t.footer.disclaimer}</p>
+          <details class="mt-4 text-xs text-white/50"><summary class="cursor-pointer font-bold text-white/65">{t.footer.creditsSummary}</summary><p class="mt-2 max-w-3xl leading-5">{t.footer.creditsText}</p></details>
+        </div>
+        <a href="#top" class="text-sm font-bold text-[#e6c989]">{t.footer.backToTop}</a>
+      </div>
+    </footer>
+
+    <script id="itinerary-labels" is:inline type="application/json" set:html={itineraryLabels}></script>
+    <script is:inline>
+      (function() {
+        var STORAGE_KEY = 'fort-san-pedro-itinerary-v1';
+        var defaults = {
+          saveFort: 'Save Fort to itinerary',
+          saveNearby: 'Save to itinerary',
+          saved: 'Saved to itinerary',
+          remove: 'Remove',
+          empty: 'Nothing saved yet.'
+        };
+        var LABELS = defaults;
+        try {
+          var raw = document.getElementById('itinerary-labels');
+          if (raw && raw.textContent) {
+            var parsed = JSON.parse(raw.textContent);
+            LABELS = {
+              saveFort: parsed.saveFort || defaults.saveFort,
+              saveNearby: parsed.saveNearby || defaults.saveNearby,
+              saved: parsed.saved || defaults.saved,
+              remove: parsed.remove || defaults.remove,
+              empty: parsed.empty || defaults.empty
+            };
+          }
+        } catch (e) { LABELS = defaults; }
+
+        function readStops() {
+          try {
+            var parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            if (!Array.isArray(parsed)) return [];
+            return parsed.filter(function(x) {
+              return Boolean(x) && typeof x.id === 'string' && typeof x.name === 'string';
+            });
+          } catch (e) { return []; }
+        }
+        function writeStops(stops) { localStorage.setItem(STORAGE_KEY, JSON.stringify(stops)); }
+        var escapeMap = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' };
+        function escapeText(value) {
+          return value.replace(/[&<>"']/g, function(char) { return escapeMap[char] || char; });
+        }
+
+        function render() {
+          var stops = readStops();
+
+          var buttons = document.querySelectorAll('.save-place');
+          for (var i = 0; i < buttons.length; i++) {
+            var button = buttons[i];
+            var saved = stops.some(function(stop) { return stop.id === button.dataset.saveId; });
+            button.setAttribute('aria-pressed', String(saved));
+            var label = button.querySelector('.save-label');
+            if (label) {
+              if (!button._baseLabel) button._baseLabel = label.textContent;
+              label.textContent = saved ? LABELS.saved : (button._baseLabel || LABELS.saveNearby);
+            }
+          }
+
+          var list = document.getElementById('saved-list');
+          if (!list) return;
+          if (!stops.length) {
+            list.innerHTML = '<p id="empty-itinerary" class="border border-dashed border-[#bba988] p-7 text-[#6a6f66]">' + escapeText(LABELS.empty) + '</p>';
+            return;
+          }
+          var html = '';
+          for (var j = 0; j < stops.length; j++) {
+            var stop = stops[j];
+            var num = String(j + 1).padStart(2, '0');
+            html += '<div class="check-card flex items-center justify-between border border-[#d2c5aa] bg-white p-4" data-saved="true"><div class="flex items-center gap-4"><span class="heritage-serif text-2xl text-[#b7a27e]">' + num + '</span><strong>' + escapeText(stop.name) + '</strong></div><button type="button" data-remove-id="' + escapeText(stop.id) + '" class="remove-stop text-xs font-extrabold text-[#9a482e]">' + escapeText(LABELS.remove) + '</button></div>';
+          }
+          list.innerHTML = html;
+          var removeBtns = list.querySelectorAll('.remove-stop');
+          for (var k = 0; k < removeBtns.length; k++) {
+            removeBtns[k].addEventListener('click', function(e) {
+              var target = e.currentTarget;
+              var id = target && target.dataset ? target.dataset.removeId : null;
+              if (id == null) return;
+              writeStops(readStops().filter(function(s) { return s.id !== id; }));
+              render();
+            });
+          }
+        }
+
+        var saveButtons = document.querySelectorAll('.save-place');
+        for (var bi = 0; bi < saveButtons.length; bi++) {
+          (function(btn) {
+            btn.addEventListener('click', function() {
+              var id = btn.dataset.saveId;
+              var name = btn.dataset.saveName;
+              if (!id || !name) return;
+              var stops = readStops();
+              var exists = stops.some(function(stop) { return stop.id === id; });
+              writeStops(exists ? stops.filter(function(stop) { return stop.id !== id; }) : stops.concat([{ id: id, name: name }]));
+              render();
+            });
+          })(saveButtons[bi]);
+        }
+
+        var clearBtn = document.getElementById('clear-itinerary');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', function() {
+            localStorage.removeItem(STORAGE_KEY);
+            render();
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', render);
+        } else {
+          render();
+        }
+      })();
+    </script>
+  </body>
+</html>
