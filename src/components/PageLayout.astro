@@ -9,13 +9,21 @@ const site = Astro.site;
 const canonical = site ? new URL(Astro.url.pathname, site).href : undefined;
 const ogImage = site ? new URL('/images/fort-san-pedro-hero.jpg', site).href : '/images/fort-san-pedro-hero.jpg';
 
+const mapsUrl = 'https://maps.app.goo.gl/MdpB9LcfKuXbGCmk8';
+const mapsEmbedSrc = `https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1229.66!2d123.905552!3d10.292619!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99be0deb18889%3A0xcd7afbb07d30a902!2z5Zyj5L2p5b63572X5aCh!5e1!3m2!1s${t.meta.htmlLang}!2s!4v1788229251853!5m2!1s${t.meta.htmlLang}!2s`;
+
 const attractionJsonLd = {
   '@context': 'https://schema.org',
-  '@type': ['TouristAttraction', 'LocalBusiness'],
+  '@type': ['TouristAttraction', 'LandmarksOrHistoricalBuildings'],
+  '@id': canonical ? `${canonical}#attraction` : '#attraction',
   name: t.schema.attractionName,
-  alternateName: t.schema.attractionAlternateName,
+  alternateName: [t.schema.attractionAlternateName, `Cebu City ${t.schema.attractionName}`],
   description: t.schema.attractionDescription,
-  ...(canonical ? { url: canonical, image: new URL('/images/fort-san-pedro-hero.jpg', site).href } : {}),
+  url: canonical,
+  image: [ogImage],
+  isAccessibleForFree: true,
+  hasMap: mapsUrl,
+  sameAs: [mapsUrl, 'https://beta.tourism.gov.ph/'],
   address: {
     '@type': 'PostalAddress',
     streetAddress: '7WR4+X7J, A. Pigafetta Street',
@@ -34,12 +42,31 @@ const attractionJsonLd = {
   ],
   aggregateRating: {
     '@type': 'AggregateRating',
-    ratingValue: '3.8',
-    reviewCount: '1344',
+    ratingValue: t.schema.ratingValue,
+    reviewCount: t.schema.reviewCount,
     bestRating: '5',
     worstRating: '1'
   },
-  priceRange: '₱40–₱50'
+  priceRange: '₱40–₱50',
+  touristType: [t.schema.attractionType]
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.schema.attractionName, item: canonical },
+    { '@type': 'ListItem', position: 2, name: 'Cebu City', item: site ? new URL('/', site).href : '/' }
+  ]
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': site ? new URL('/#website', site).href : '#website',
+  url: site ? new URL('/', site).href : '/',
+  name: 'Fort San Pedro Cebu - Visitor Guide',
+  inLanguage: t.meta.htmlLang
 };
 
 const faqs = t.faq.items;
@@ -50,7 +77,11 @@ const faqJsonLd = {
 };
 
 const nearby = t.nearby.places;
+const history = t.history.timeline;
+const stories = t.stories.items;
+const facilities = t.facilities.items;
 const food = t.food.items;
+const sources = t.sources.items;
 
 const localeKey = locale;
 
@@ -71,26 +102,34 @@ const itineraryLabels = JSON.stringify({
     <meta name="description" content={t.meta.description} />
     <meta name="theme-color" content="#193325" />
     {canonical && <link rel="canonical" href={canonical} />}
-    <link rel="alternate" hreflang="ceb" href={site ? new URL(t.alternates.ceb, site).href : t.alternates.ceb} />
     <link rel="alternate" hreflang="en" href={site ? new URL(t.alternates.en, site).href : t.alternates.en} />
     <link rel="alternate" hreflang="fil" href={site ? new URL(t.alternates.fil, site).href : t.alternates.fil} />
-    <link rel="alternate" hreflang="x-default" href={site ? new URL(t.alternates.en, site).href : t.alternates.en} />
+    <link rel="alternate" hreflang="x-default" href={site ? new URL(t.alternates.fil, site).href : t.alternates.fil} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={t.meta.ogTitle} />
     <meta property="og:description" content={t.meta.ogDescription} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={`${t.schema.attractionName} in Cebu City`} />
     {canonical && <meta property="og:url" content={canonical} />}
     <meta property="og:locale" content={t.meta.ogLocale} />
-    <meta property="og:locale:alternate" content="ceb_PH" />
-    <meta property="og:locale:alternate" content="en_PH" />
     <meta property="og:locale:alternate" content="fil_PH" />
+    <meta property="og:locale:alternate" content="en_PH" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={t.meta.ogTitle} />
+    <meta name="twitter:description" content={t.meta.ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Fort San Pedro" />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(attractionJsonLd)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)}></script>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(faqJsonLd)}></script>
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
     <script is:inline>
@@ -112,22 +151,24 @@ const itineraryLabels = JSON.stringify({
             <span class="mt-1 block text-[10px] font-bold uppercase tracking-[.2em] text-white/65">{t.nav.siteTagline}</span>
           </span>
         </a>
-        <nav aria-label="Pangunang nabigasyon" class="hidden items-center gap-6 text-sm font-semibold md:flex">
+        <nav aria-label={t.nav.navLabel} class="hidden items-center gap-6 text-sm font-semibold md:flex">
+          <a class="hover:text-[var(--gold)]" href="#overview">{t.nav.navOverview}</a>
+          <a class="hover:text-[var(--gold)]" href="#kasaysayan">{t.nav.navHistory}</a>
           <a class="hover:text-[var(--gold)]" href="#bisita">{t.nav.navVisit}</a>
           <a class="hover:text-[var(--gold)]" href="#transport">{t.nav.navTransport}</a>
           <a class="hover:text-[var(--gold)]" href="#duol">{t.nav.navNearby}</a>
+          <a class="hover:text-[var(--gold)]" href="#facilities">{t.nav.navFacilities}</a>
           <a class="rounded-full border border-white/35 bg-black/15 px-4 py-2 backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]" href="#itinerary">{t.nav.navItinerary}</a>
           <div class="relative">
             <details class="group">
               <summary class="flex cursor-pointer list-none items-center gap-2 rounded-full border border-white/35 bg-black/15 px-4 py-2 text-sm font-semibold backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                <span data-lang-label>{t.languageSwitcher[localeKey as 'ceb' | 'en' | 'fil']}</span>
+                <span data-lang-label>{t.languageSwitcher[localeKey as 'en' | 'fil']}</span>
                 <span class="transition group-open:rotate-180">▾</span>
               </summary>
               <div class="absolute right-0 z-40 mt-2 w-40 overflow-hidden rounded-xl border border-white/25 bg-[#10251c]/95 py-1 backdrop-blur">
-                <a href={t.alternates.ceb} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'ceb' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇵🇭 {t.languageSwitcher.ceb}</a>
-                <a href={t.alternates.en} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'en' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇬🇧 {t.languageSwitcher.en}</a>
                 <a href={t.alternates.fil} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'fil' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇵🇭 {t.languageSwitcher.fil}</a>
+                <a href={t.alternates.en} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'en' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇬🇧 {t.languageSwitcher.en}</a>
               </div>
             </details>
           </div>
@@ -136,12 +177,11 @@ const itineraryLabels = JSON.stringify({
           <details class="group">
             <summary class="flex cursor-pointer list-none items-center gap-2 rounded-full border border-white/35 bg-black/15 px-4 py-2 text-sm font-semibold backdrop-blur">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              <span>{t.languageSwitcher[localeKey as 'ceb' | 'en' | 'fil']}</span>
+              <span>{t.languageSwitcher[localeKey as 'en' | 'fil']}</span>
             </summary>
             <div class="absolute right-4 z-40 mt-2 w-40 overflow-hidden rounded-xl border border-white/25 bg-[#10251c]/95 py-1 backdrop-blur">
-              <a href={t.alternates.ceb} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'ceb' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇵🇭 {t.languageSwitcher.ceb}</a>
-              <a href={t.alternates.en} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'en' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇬🇧 {t.languageSwitcher.en}</a>
               <a href={t.alternates.fil} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'fil' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇵🇭 {t.languageSwitcher.fil}</a>
+              <a href={t.alternates.en} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${localeKey === 'en' ? 'bg-white/10 text-[#e6c989]' : ''}`}>🇬🇧 {t.languageSwitcher.en}</a>
             </div>
           </details>
         </div>
@@ -173,6 +213,51 @@ const itineraryLabels = JSON.stringify({
           <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">{t.hero.statRegularLabel}</span><strong class="heritage-serif mt-1 block text-2xl">₱50</strong></div>
           <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">{t.hero.statHoursLabel}</span><strong class="heritage-serif mt-1 block text-2xl">8–5</strong></div>
           <div class="px-5 py-4"><span class="block text-[10px] uppercase tracking-[.18em] text-white/55">{t.hero.statDurationLabel}</span><strong class="heritage-serif mt-1 block text-2xl">45–90m</strong></div>
+        </div>
+      </section>
+
+      <section id="overview" class="bg-[#faf6ed] py-20 md:py-28">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+          <div>
+            <p class="eyebrow">{t.overview.eyebrow}</p>
+            <h2 class="section-title mt-4">{t.overview.title}</h2>
+            <nav class="mt-6" aria-label={t.overview.breadcrumbLabel}>
+              <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-bold uppercase tracking-[.15em] text-[#7c6d57]">
+                {t.overview.crumbs.map((crumb, i) => (
+                  <li class="flex items-center gap-2">
+                    {i > 0 && <span class="text-[#c6b28e]" aria-hidden="true">/</span>}
+                    <span class={i === 0 ? 'text-[var(--moss-deep)]' : ''}>{crumb}</span>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </div>
+          <div>
+            <p class="lede" set:html={t.overview.intro}></p>
+            <dl class="mt-10 grid gap-px overflow-hidden border border-[#d5c7ad] bg-[#d5c7ad] sm:grid-cols-2">
+              <div class="bg-white p-6">
+                <dt class="text-[10px] font-black uppercase tracking-[.18em] text-[var(--rust)]">{t.overview.typeLabel}</dt>
+                <dd class="mt-3 text-xl font-bold text-[var(--moss-deep)]">{t.overview.typeValue}</dd>
+              </div>
+              <div class="bg-white p-6">
+                <dt class="text-[10px] font-black uppercase tracking-[.18em] text-[var(--rust)]">{t.overview.ratingLabel}</dt>
+                <dd class="mt-3 text-xl font-bold text-[var(--moss-deep)]"><span class="text-[var(--gold)]" aria-hidden="true">★</span> {t.overview.ratingValue}</dd>
+              </div>
+              <div class="bg-white p-6">
+                <dt class="text-[10px] font-black uppercase tracking-[.18em] text-[var(--rust)]">{t.overview.hoursLabel}</dt>
+                <dd class="mt-3 text-xl font-bold text-[var(--moss-deep)]">{t.overview.hoursValue}</dd>
+              </div>
+              <div class="bg-white p-6 sm:col-span-2">
+                <dt class="text-[10px] font-black uppercase tracking-[.18em] text-[var(--rust)]">{t.overview.addressLabel}</dt>
+                <dd class="mt-3 text-lg font-bold leading-7 text-[var(--moss-deep)]">{t.overview.addressValue}</dd>
+              </div>
+            </dl>
+            <div class="mt-10 border-t border-[#d8cab0] pt-8">
+              <h3 class="text-2xl font-bold text-[var(--moss-deep)]">{t.overview.nearbyTitle}</h3>
+              <p class="mt-4 lede !text-base" set:html={t.overview.nearbyText}></p>
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--moss)] px-5 py-2.5 text-sm font-extrabold text-[var(--moss)] transition hover:bg-[var(--moss)] hover:text-white">{t.overview.mapsLabel} ↗</a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -210,6 +295,46 @@ const itineraryLabels = JSON.stringify({
           </figure>
         </div>
         <div class="h-8 md:h-20"></div>
+      </section>
+
+      <section id="kasaysayan" class="py-24 md:py-32">
+        <div class="section-shell grid gap-12 lg:grid-cols-[.78fr_1.22fr]">
+          <div class="lg:sticky lg:top-10 lg:self-start">
+            <p class="eyebrow">{t.history.eyebrow}</p>
+            <h2 class="section-title mt-4">{t.history.title}</h2>
+            <p class="lede mt-6">{t.history.lede}</p>
+          </div>
+          <div class="space-y-8">
+            {history.map((item) => (
+              <article class="border-l-2 border-[var(--gold)] pl-5">
+                <div class="heritage-serif text-4xl font-bold text-[var(--rust)]">{item.year}</div>
+                <h3 class="mt-2 text-2xl font-bold text-[var(--moss-deep)]">{item.title}</h3>
+                <p class="mt-2 max-w-2xl leading-7 text-[#626860]">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="story" class="bg-[var(--moss-deep)] py-24 text-white md:py-32">
+        <div class="section-shell">
+          <div class="grid gap-8 lg:grid-cols-[.85fr_1.15fr] lg:items-end">
+            <div><p class="text-xs font-extrabold uppercase tracking-[.2em] text-[#e6c989]">{t.stories.eyebrow}</p><h2 class="mt-4 text-[clamp(2rem,5vw,4rem)] font-bold leading-[.98]">{t.stories.title}</h2></div>
+            <p class="text-lg leading-8 text-white/68">{t.stories.lede}</p>
+          </div>
+          <div class="mt-12 grid gap-5 sm:grid-cols-2">
+            {stories.map((item, index) => (
+              <article class="rounded-xl border border-white/15 bg-white/5 p-7 transition hover:bg-white/10">
+                <div class="flex items-center justify-between gap-4">
+                  <span class="rounded-full border border-[#e6c989] px-3 py-1 text-[10px] font-black uppercase tracking-[.18em] text-[#e6c989]">{item.kind}</span>
+                  <span class="heritage-serif text-3xl text-white/30">0{index + 1}</span>
+                </div>
+                <h3 class="mt-8 text-2xl font-bold">{item.title}</h3>
+                <p class="mt-3 leading-7 text-white/70">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section id="bisita" class="py-24 md:py-32">
@@ -298,6 +423,27 @@ const itineraryLabels = JSON.stringify({
         </div>
       </section>
 
+      <section id="facilities" class="py-24 md:py-32">
+        <div class="section-shell">
+          <div class="max-w-3xl">
+            <p class="eyebrow">{t.facilities.eyebrow}</p>
+            <h2 class="section-title mt-4">{t.facilities.title}</h2>
+            <p class="lede mt-6">{t.facilities.lede}</p>
+          </div>
+          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {facilities.map((item) => (
+              <article class="fort-card p-6">
+                <div class="flex items-start justify-between gap-4">
+                  <h3 class="text-xl font-bold text-[var(--moss-deep)]">{item.name}</h3>
+                  <span class="shrink-0 rounded-full bg-[var(--moss)]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[.12em] text-[var(--moss)]">{item.hint}</span>
+                </div>
+                <p class="mt-4 text-sm leading-6 text-[#5f665d]">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="itinerary" class="py-24 md:py-32">
         <div class="section-shell grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
           <div>
@@ -316,11 +462,16 @@ const itineraryLabels = JSON.stringify({
       </section>
 
       <section id="mapa" class="map-wrap bg-[#1f3026]">
-        <div class="section-shell grid gap-8 py-14 text-white lg:grid-cols-[.6fr_1.4fr] lg:items-end">
-          <div><p class="text-xs font-extrabold uppercase tracking-[.2em] text-[#e6c989]">{t.map.eyebrow}</p><h2 class="heritage-serif mt-3 text-4xl font-bold" set:html={t.map.address}></h2><p class="mt-4 text-sm leading-6 text-white/60">{t.map.note}</p></div>
+        <div class="section-shell grid gap-8 py-14 text-white lg:grid-cols-[.65fr_1.35fr] lg:items-end">
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-[.2em] text-[#e6c989]">{t.map.eyebrow}</p>
+            <h2 class="heritage-serif mt-3 text-3xl font-bold leading-tight md:text-4xl">{t.map.title}</h2>
+            <p class="mt-4 text-lg font-bold text-white/90" set:html={t.map.address}></p>
+            <p class="mt-2 text-sm leading-6 text-white/60">{t.map.note}</p>
+          </div>
           <div class="text-sm text-white/65 lg:text-right">Coordinates: 10.292619, 123.905552 · Plus Code: 7WR4+X7J</div>
         </div>
-        <iframe title={t.map.iframeTitle} src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1004324.1474712176!2d122.58348729218027!3d10.489533320078783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99be0deb18889%3A0xcd7afbb07d30a902!2z5Zyj5L2p5b63572X5aCh!5e0!3m2!1s${t.meta.htmlLang}!2sph!4v1786413932560!5m2!1s${t.meta.htmlLang}!2sph&hl=${t.meta.htmlLang}&region=PH`} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe title={t.map.iframeTitle} src={mapsEmbedSrc} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </section>
 
       <section id="faq" class="py-24 md:py-32">
@@ -333,6 +484,28 @@ const itineraryLabels = JSON.stringify({
                 <p class="max-w-3xl pb-2 pt-4 leading-7 text-[#626860]">{item.a}</p>
               </details>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="sources" class="bg-[#efe7d8] py-20 md:py-24">
+        <div class="section-shell grid gap-10 lg:grid-cols-[.7fr_1.3fr]">
+          <div>
+            <p class="eyebrow">{t.sources.eyebrow}</p>
+            <h2 class="section-title mt-4">{t.sources.title}</h2>
+          </div>
+          <div>
+            <p class="lede !text-base">{t.sources.lede}</p>
+            <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+              {sources.map((item) => (
+                <li>
+                  <a href={item.url} target="_blank" rel="noopener noreferrer" class="group flex h-full flex-col justify-between gap-3 rounded-xl border border-[#d5c7ad] bg-[#faf6ed] p-5 transition hover:border-[var(--moss)] hover:bg-white">
+                    <strong class="text-sm font-extrabold text-[var(--moss-deep)]">{item.name}</strong>
+                    <span class="text-xs font-bold text-[#7c6d57] transition group-hover:text-[var(--rust)]">{item.label} ↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -460,6 +633,13 @@ const itineraryLabels = JSON.stringify({
           render();
         }
       })();
+    </script>
+    <script is:inline>
+      if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js').catch(function () {});
+        });
+      }
     </script>
   </body>
 </html>

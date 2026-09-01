@@ -1,0 +1,8 @@
+ WARN  Unsupported engine: wanted: {"node":"24.19.0"} (current: {"node":"v24.14.0","pnpm":"9.15.5"})
+
+> fort-san-pedro-cebu@1.0.0 preview C:\Users\Administrator\Documents\GitHub\fortsanpedrocebu
+> astro preview
+
+[42m[1m astro [22m[49m [32mv7.2.0[39m [2mready in[22m 76 [2mms[22m
+[2m┃[22m Local    [36mhttp://localhost:4321/[39m
+[2m┃[22m Network  [2muse --host to expose[22m

@@ -1,4 +1,4 @@
-export type Locale = 'ceb' | 'en' | 'fil';
+export type Locale = 'en' | 'fil';
 
 export interface Translation {
   meta: {
@@ -13,14 +13,21 @@ export interface Translation {
     attractionName: string;
     attractionAlternateName: string;
     attractionDescription: string;
+    attractionType: string;
+    ratingValue: string;
+    reviewCount: string;
   };
   nav: {
     skipToContent: string;
+    navLabel: string;
     homeLabel: string;
     siteTagline: string;
+    navOverview: string;
+    navHistory: string;
     navVisit: string;
     navTransport: string;
     navNearby: string;
+    navFacilities: string;
     navItinerary: string;
   };
   hero: {
@@ -33,6 +40,24 @@ export interface Translation {
     statRegularLabel: string;
     statHoursLabel: string;
     statDurationLabel: string;
+  };
+  overview: {
+    eyebrow: string;
+    title: string;
+    breadcrumbLabel: string;
+    crumbs: string[];
+    intro: string;
+    typeLabel: string;
+    typeValue: string;
+    ratingLabel: string;
+    ratingValue: string;
+    hoursLabel: string;
+    hoursValue: string;
+    addressLabel: string;
+    addressValue: string;
+    nearbyTitle: string;
+    nearbyText: string;
+    mapsLabel: string;
   };
   whyVisit: {
     eyebrow: string;
@@ -89,6 +114,36 @@ export interface Translation {
       saveButton: string;
     }[];
   };
+  history: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+    timeline: {
+      year: string;
+      title: string;
+      text: string;
+    }[];
+  };
+  stories: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+    items: {
+      kind: string;
+      title: string;
+      text: string;
+    }[];
+  };
+  facilities: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+    items: {
+      name: string;
+      hint: string;
+      text: string;
+    }[];
+  };
   food: {
     eyebrow: string;
     title: string;
@@ -111,9 +166,20 @@ export interface Translation {
   };
   map: {
     eyebrow: string;
+    title: string;
     address: string;
     note: string;
     iframeTitle: string;
+  };
+  sources: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+    items: {
+      name: string;
+      url: string;
+      label: string;
+    }[];
   };
   faq: {
     eyebrow: string;
@@ -133,201 +199,44 @@ export interface Translation {
   };
   languageSwitcher: {
     label: string;
-    ceb: string;
     en: string;
     fil: string;
   };
   alternates: {
-    ceb: string;
     en: string;
     fil: string;
   };
 }
 
 export const translations: Record<Locale, Translation> = {
-  ceb: {
-    meta: {
-      title: 'Fort San Pedro Cebu | Giya sa Pagbisita',
-      description: 'Cebuano nga giya sa Fort San Pedro: entrance fee, oras, transport, parking, duol nga pagkaon, heritage stops, mapa ug itinerary checklist.',
-      ogTitle: 'Fort San Pedro Cebu | Giya sa Pagbisita',
-      ogDescription: 'Planohi ang imong pagbisita sa pinakailang Spanish-era stone fort sa Cebu City.',
-      ogLocale: 'ceb_PH',
-      htmlLang: 'ceb'
-    },
-    schema: {
-      attractionName: 'Fort San Pedro',
-      attractionAlternateName: 'Kuta sa San Pedro',
-      attractionDescription: 'Usa ka makasaysayang tatsulok nga kuta sa Cebu City, duol sa Plaza Independencia ug pantalan.'
-    },
-    nav: {
-      skipToContent: 'Adto sa sulod',
-      homeLabel: 'Fort San Pedro home',
-      siteTagline: 'Cebu · Sugbo',
-      navVisit: 'Pagbisita',
-      navTransport: 'Transport',
-      navNearby: 'Duol',
-      navItinerary: 'Akong itinerary'
-    },
-    hero: {
-      eyebrow: 'Kuta sa San Pedro · Cebu City',
-      headingPrimary: 'Bato, dagat,',
-      headingAccent: 'ug kasaysayan.',
-      subheading: 'Usa ka compact nga triangular stone fort sa daplin sa Plaza Independencia—usa ka kusgan nga pagsugod sa imong heritage walk sa downtown Cebu.',
-      cta1: 'Planoha ang pagbisita',
-      cta2: 'Tan-awa ang mapa',
-      statRegularLabel: 'Regular',
-      statHoursLabel: 'Kasamtangang oras',
-      statDurationLabel: 'Igo nga oras'
-    },
-    whyVisit: {
-      eyebrow: 'Ngano moanhi',
-      title: 'Gamaya ang footprint, dako ang storya.',
-      lede: 'Ang Fort San Pedro nagsugod isip depensa sa unang Spanish settlement sa Cebu. Ang kasamtangang stone structure nagdala sa porma sa usa ka triangular bastioned fort—mga pader nga koral-stone, old cannons, garden courtyard ug views gikan sa ramparts.',
-      saveButton: 'I-save ang Fort sa itinerary',
-      year1: '1565',
-      year1Text: 'Nagsugod ang unang fortification sa lugar; sa ulahi gihimo ug gipakusog sa bato ang kuta.',
-      year2: '1738',
-      year2Text: 'Ang kasamtangang stone fort kasagarang gi-date sa ika-18 nga siglo, usa sa pinakaklarong Spanish-era military landmarks sa Cebu.'
-    },
-    images: {
-      entranceAlt: 'Stone gate ug façade sa Fort San Pedro',
-      courtyardAlt: 'Garden courtyard sulod sa Fort San Pedro',
-      cannonAlt: 'Karaang kanyon sa Fort San Pedro',
-      heroAlt: 'Pangunang entrada sa Fort San Pedro sa Cebu City'
-    },
-    visit: {
-      eyebrow: 'Praktikal nga giya',
-      title: 'Sa dili pa mosulod sa ganghaan.',
-      ticketLabel: 'Ticket / bayad',
-      ticketRegularNote: '₱40 alang sa estudyante ug senior citizen sumala sa kasamtangang gipatik nga city fee proposal nga nag-retain sa existing basic rates. Dad-a ang valid ID para sa discounted rate.',
-      ticketTip: 'Tip: ang fee mahimong mausab; kumpirmaha sa entrance.',
-      hoursLabel: 'Oras',
-      hoursNote: 'Kasamtangang listing: adlaw-adlaw. Holidays, events ug maintenance mahimong makaapekto.',
-      stayLabel: 'Stay',
-      stayUnit: 'minutos',
-      stayNote: 'Igo para sa courtyard, wall walk, kanyon ug display; dugangi kon hilig ka sa history o photography.',
-      bestTimeLabel: 'Pinakamaayong oras',
-      bestTimeTitle: 'Sayo sa buntag o ulahi sa hapon',
-      bestTimeText: 'Mas komportable ang kainit ug mas nindot ang kahayag sa stone walls. Kon gusto nimo og mas hilom nga courtyard, sulayi ang opening hours imbes tunga sa adlaw.',
-      parkingLabel: 'Parking',
-      parkingTitle: 'Limitado, busa pag-abot sayo.',
-      parkingText: 'Adunay parking sa palibot sa Plaza Independencia, apan mahimong mapuno labi na sa busy hours ug events. Taxi/Grab ang mas simple kung dili ka gusto mangita og slot.'
-    },
-    transport: {
-      eyebrow: 'Detailed transport',
-      title: 'Paingon sa kuta.',
-      intro: 'I-search sa ride app ang "Fort San Pedro" o "Plaza Independencia." Ang entrance naa sa A. Pigafetta Street, duol sa Pier 1 ug downtown heritage area.',
-      routes: [
-        {
-          title: 'Gikan sa Mactan-Cebu International Airport',
-          text: '<strong>Pinakasayon:</strong> taxi o Grab diretso sa Fort San Pedro / Plaza Independencia. <strong>Budget option:</strong> MyBus gikan sa airport paingon sa SM City Cebu, dayon jeepney o taxi/Grab para sa final leg pa-downtown. Ayaw pag-budget og eksaktong travel time kay kusog mausab ang trapiko sa Cebu.'
-        },
-        {
-          title: 'Jeepney / public transport',
-          text: 'Pangitaa ang mga ruta nga moagi sa <strong>Plaza Independencia / Pier area</strong>. Ang 12I route nailhan nga nagkonektar sa SM City Cebu ngadto sa Plaza Independencia–Fort San Pedro corridor. Pangutana sa driver o conductor sa dili pa mosakay kay mahimong mausab ang routing.'
-        },
-        {
-          title: 'Taxi / Grab',
-          text: 'Maoy pinakastraightforward gikan sa hotel, IT Park, Ayala o SM. I-pin ang <strong>Fort San Pedro, A. Pigafetta Street</strong>. Para sa pickup, mas sayon usahay sa edge sa Plaza Independencia kaysa mismong gate kon daghan ang tawo.'
-        },
-        {
-          title: 'Gikan sa Cebu Pier 1',
-          text: 'Ang fort naa duol sa port district; gikan sa Pier 1, praktikal ang mubo nga lakaw o dali nga taxi/ride depende sa imong bagahe ug kainit.'
-        }
-      ]
-    },
-    nearby: {
-      eyebrow: 'Heritage loop',
-      title: 'Ayaw hunong sa fort.',
-      lede: 'Ang pinakamaayo nga paagi sa pagtan-aw sa Fort San Pedro mao ang pag-combine niini sa karaang downtown Cebu. Daghan sa importante nga landmarks naa sa usa ka compact nga heritage corridor.',
-      places: [
-        { id: 'plaza', name: 'Plaza Independencia', type: 'Parke · tupad ra', text: 'Halapad nga green space sa gawas mismo sa kuta—maayo para mopahuway ug magsugod sa heritage walk.', saveButton: 'I-save sa itinerary' },
-        { id: 'magellans-cross', name: 'Magellan’s Cross', type: 'Heritage · downtown', text: 'Usa sa pinakaila nga landmark sa Cebu, sulod sa mubo nga lakaw gikan sa fort.', saveButton: 'I-save sa itinerary' },
-        { id: 'basilica', name: 'Basilica Minore del Santo Niño', type: 'Simbahan · heritage', text: 'Importante nga relihiyoso ug makasaysayang site sa sentro sa karaang Cebu.', saveButton: 'I-save sa itinerary' },
-        { id: 'museum-cebu', name: 'National Museum of the Philippines – Cebu', type: 'Museyo · A. Pigafetta', text: 'Duol nga museyo nga maayo i-pares sa fort para sa mas lawom nga konteksto sa kasaysayan sa Cebu.', saveButton: 'I-save sa itinerary' },
-        { id: 'cathedral', name: 'Cebu Metropolitan Cathedral', type: 'Simbahan · downtown', text: 'Usa pa ka prominenteng stop sa heritage core sa Cebu City.', saveButton: 'I-save sa itinerary' },
-        { id: 'casa-gorordo', name: 'Casa Gorordo Museum', type: 'Museyo · Parian', text: 'Heritage house nga nagpakita sa domestic life ug arkitektura sa karaang Cebu.', saveButton: 'I-save sa itinerary' }
-      ]
-    },
-    food: {
-      eyebrow: 'Duol nga pagkaon',
-      title: 'Human sa bato, kaon.',
-      lede: 'Pipila ka practical nga stops sa downtown/port side. Check gihapon ang current opening hours sa restaurant sa dili pa moadto.',
-      items: [
-        { name: 'KKD STK + BBQ', style: 'Sugba · seafood · Filipino', note: 'Praktikal nga stop duol sa Fort San Pedro para sa grilled seafood, barbecue ug classic Filipino dishes.' },
-        { name: 'Manila Foodshoppe', style: 'Chinese–Filipino', note: 'Old-school downtown favorite para sa noodles, dim sum ug family-style nga pagkaon.' },
-        { name: 'Alvar’s Food Haus', style: 'Lutong-bahay · budget', note: 'Simple ug budget-friendly nga pagkaon duol sa port area; maayo kung gusto kag dali nga local meal.' }
-      ]
-    },
-    itinerary: {
-      eyebrow: 'Local itinerary',
-      title: 'Himoa imong heritage checklist.',
-      lede: 'I-save ang gusto nimong adtoan. Ang lista gitipigan <strong>lamang sa imong device</strong> pinaagi sa localStorage—walay account, walay upload, walay server.',
-      clearButton: 'Tangtanga tanan sa lista',
-      emptyState: 'Wala pa kay gi-save. I-save ang Fort o pili og stops sa "Duol" nga seksyon.',
-      privacyNote: 'Privacy note: ang itinerary data magpabilin sa kasamtangang browser/device hangtod imo kining i-clear o i-delete ang browser storage.',
-      savedLabel: 'Na-save sa itinerary',
-      removeLabel: 'Tangtanga'
-    },
-    map: {
-      eyebrow: 'Lokasyon',
-      address: 'A. Pigafetta Street,<br />Cebu City 6000',
-      note: 'Tapad sa Plaza Independencia ug duol sa Cebu Pier 1.',
-      iframeTitle: 'Mapa sa Fort San Pedro, Cebu City'
-    },
-    faq: {
-      eyebrow: 'FAQ',
-      title: 'Kasagarang pangutana.',
-      items: [
-        { q: 'Pila ang entrance fee sa Fort San Pedro?', a: 'Ang kasamtangang regular nga entrance fee nga gipatik sa lokal nga balita mao ang ₱50; ₱40 alang sa estudyante ug senior citizen. Maayong kumpirmahon gihapon sa entrance kay mahimong mausab ang polisiya.' },
-        { q: 'Unsa orasa bukas ang kuta?', a: 'Ang kasamtangang Google Maps listing nagpakita og 8:00 AM–5:00 PM adlaw-adlaw. Ang oras mahimong mausab sa holidays, events, o maintenance.' },
-        { q: 'Pila ka oras ang igo para sa pagbisita?', a: 'Alang sa kadaghanan, 45–90 minutos igo na para sa courtyard, ramparts, mga kanyon, ug mga display. Dugangi og oras kon apilon nimo ang Plaza Independencia ug ubang heritage sites sa downtown.' },
-        { q: 'Pwede ra ba lakawon gikan sa Magellan’s Cross?', a: 'Oo. Ang Fort San Pedro, Plaza Independencia, Basilica del Santo Niño, ug Magellan’s Cross naa sa parehas nga downtown heritage area ug praktikal nga i-combine sa usa ka walking route.' },
-        { q: 'Aduna bay parking?', a: 'Adunay parking sa palibot sa Plaza Independencia, apan limitado ang espasyo ug mahimong mapuno. Mas sayon kasagaran ang taxi/Grab o pag-abot sayo.' },
-        { q: 'Maayo ba ang Fort San Pedro para sa bata ug senior?', a: 'Ang ubos nga courtyard sayon ra ma-access, apan ang pipila ka hagdanan ug rampart sections adunay uneven nga bato. Paghinay ug pangayo og tabang kon kinahanglan.' }
-      ]
-    },
-    footer: {
-      title: 'Fort San Pedro · Cebu',
-      subtitle: 'Independent visitor guide',
-      disclaimer: 'Dili kini opisyal nga website sa Fort San Pedro, Cebu City Government, National Museum, o bisan unsang ahensya sa gobyerno. Ang impormasyon alang lamang sa trip planning; kumpirmaha ang current fees, hours ug access rules sa dili pa mobisita.',
-      creditsSummary: 'Photo credits',
-      creditsText: 'Hero: xiquinhosilva, CC BY 2.0. Main entrance & courtyard: Eugene Alvin Villar, CC BY-SA 4.0. Cannon: Farro, public domain. Local copies are included in the project; see CREDITS.md for source pages and license notes.',
-      backToTop: 'Balik sa taas ↑'
-    },
-    languageSwitcher: {
-      label: 'Panglantaw sa pinulongan',
-      ceb: 'Cebuano',
-      en: 'English',
-      fil: 'Filipino'
-    },
-    alternates: {
-      ceb: '/',
-      en: '/en/',
-      fil: '/fil/'
-    }
-  },
   en: {
     meta: {
-      title: 'Fort San Pedro Cebu | Visitor Guide',
-      description: 'English guide to Fort San Pedro: entrance fee, opening hours, transport, parking, nearby dining, heritage stops, map and itinerary checklist.',
-      ogTitle: 'Fort San Pedro Cebu | Visitor Guide',
-      ogDescription: 'Plan your visit to Cebu City\'s most iconic Spanish-era stone fort.',
+      title: 'Fort San Pedro (Cebu City) - Visitor Guide & Location',
+      description: 'Discover Fort San Pedro, the iconic Spanish-built triangular stone fortress in Cebu City, Philippines, dating back to 1738. View location map, opening hours, nearby Basilica del Santo Niño, and travel tips.',
+      ogTitle: 'Fort San Pedro - Cebu City Travel Guide',
+      ogDescription: 'Visitor guide to Fort San Pedro in Cebu City, Cebu, Philippines.',
       ogLocale: 'en_PH',
       htmlLang: 'en'
     },
     schema: {
       attractionName: 'Fort San Pedro',
       attractionAlternateName: 'Fuerte de San Pedro',
-      attractionDescription: 'A historic triangular fort in Cebu City, adjacent to Plaza Independencia and the port area.'
+      attractionDescription: 'A Spanish-built triangular stone fortress in Cebu City, Philippines, dating back to 1738, now home to a garden and museum.',
+      attractionType: 'Fortress',
+      ratingValue: '4.2',
+      reviewCount: '8047'
     },
     nav: {
       skipToContent: 'Skip to content',
+      navLabel: 'Primary navigation',
       homeLabel: 'Fort San Pedro home',
       siteTagline: 'Cebu · Sugbo',
+      navOverview: 'Overview',
+      navHistory: 'History',
       navVisit: 'Visit',
       navTransport: 'Transport',
       navNearby: 'Nearby',
+      navFacilities: 'Facilities',
       navItinerary: 'My itinerary'
     },
     hero: {
@@ -340,6 +249,24 @@ export const translations: Record<Locale, Translation> = {
       statRegularLabel: 'Regular',
       statHoursLabel: 'Current hours',
       statDurationLabel: 'Recommended'
+    },
+    overview: {
+      eyebrow: 'Overview',
+      title: 'About Fort San Pedro',
+      breadcrumbLabel: 'You are here',
+      crumbs: ['Fort San Pedro', 'Cebu City', 'Cebu', 'Philippines'],
+      intro: 'Welcome to <strong>Fort San Pedro</strong>, widely recognized as the central Spanish-era fortress of <strong>Cebu City</strong>. Located in the heart of <strong>Cebu</strong>, <strong>Philippines</strong>, this destination serves as a primary hub for travelers visiting the region.',
+      typeLabel: 'Type',
+      typeValue: 'Fortress',
+      ratingLabel: 'Rating',
+      ratingValue: '4.2 · 8,047 reviews',
+      hoursLabel: 'Hours',
+      hoursValue: '08:00 – 17:00',
+      addressLabel: 'Address',
+      addressValue: '7WR4+X7J, A. Pigafetta Street, Cebu City 6000, Philippines',
+      nearbyTitle: 'Landmarks & Attractions Around Fort San Pedro',
+      nearbyText: 'When visiting <strong>Fort San Pedro</strong>, visitors can easily explore surrounding historical landmarks and points of interest, including <strong>Basilica del Santo Niño</strong> and <strong>Magellan’s Cross</strong>.',
+      mapsLabel: 'View on Google Maps'
     },
     whyVisit: {
       eyebrow: 'Why come here',
@@ -411,14 +338,50 @@ export const translations: Record<Locale, Translation> = {
         { id: 'casa-gorordo', name: 'Casa Gorordo Museum', type: 'Museum · Parian', text: 'A heritage house showcasing domestic life and architecture of old Cebu.', saveButton: 'Save to itinerary' }
       ]
     },
+    history: {
+      eyebrow: 'History',
+      title: 'Four centuries in a small fort.',
+      lede: 'From a wooden defense to a stone fortress, Fort San Pedro has watched over more than four centuries of Cebu\'s story.',
+      timeline: [
+        { year: '1565', title: 'A Spanish foothold', text: 'In 1565, conquistador Miguel López de Legazpi arrived in Cebu and founded the first permanent Spanish settlement in the Philippines. A simple wooden fort was raised here as the settlement\'s first defense.' },
+        { year: '1738', title: 'Rebuilt in stone', text: 'The wooden palisade gave way to a coral-stone fortress. Its triangular plan—three bastions named La Concepción, Ignacio de Loyola, and San Miguel—reflects the defensive architecture of the Spanish colonial period.' },
+        { year: '1898', title: 'The revolution arrives', text: 'In the context of the Philippine Revolution, the fort was taken from its Spanish garrison by revolutionary forces in 1898, near the end of centuries of colonial rule.' },
+        { year: '1900s–1940s', title: 'A new garrison', text: 'During the American colonial era the fort served as a military camp; in World War II it saw garrison duty again, and after the war it briefly housed the Cebu City zoo.' },
+        { year: 'Today', title: 'Park, museum, garden', text: 'Restored in recent decades, the fort now opens to the public as a landscaped garden, a small museum, and a symbol of Cebu\'s layered history.' }
+      ]
+    },
+    stories: {
+      eyebrow: 'Stories & legends',
+      title: 'More than the walls.',
+      lede: 'Fortresses are not just stone—they also grow stories. Some of these are recorded in history; others live on in the folklore of Cebu.',
+      items: [
+        { kind: 'Documented history', title: 'Three bastions, three saints', text: 'The fort\'s three corners are named La Concepción, Ignacio de Loyola, and San Miguel—religious names that show how faith and defense were woven together in the Spanish colonial world.' },
+        { kind: 'Local folklore', title: 'The hidden tunnel', text: 'Local lore says a secret tunnel once ran from the fort toward the Santo Niño church area. No confirmed passage has ever been found, but the story endures as one of Cebu\'s favorite what-ifs.' },
+        { kind: 'Documented history', title: 'Coral from Cebu\'s waters', text: 'The walls were built from coral stone quarried nearby and lime mortar—materials that give the fort its pale, textured surface and tie its construction to the island\'s own coasts.' },
+        { kind: 'Local memory', title: 'From fortress to zoo', text: 'Older Cebuano residents remember when the fort\'s courtyard briefly housed a small city zoo, before the space was restored as a garden and museum.' }
+      ]
+    },
+    facilities: {
+      eyebrow: 'Facilities',
+      title: 'What is around you.',
+      lede: 'A neutral guide to nearby services—we list types only, not specific shops or establishments.',
+      items: [
+        { name: 'Restrooms', hint: 'Inside the fort', text: 'Public restrooms are available inside the fort complex. Old stone paths can be uneven, so allow extra time.' },
+        { name: 'Parking', hint: 'Plaza Independencia', text: 'Limited parking around Plaza Independencia fills up fast. Taxi or ride-hailing is usually easier.' },
+        { name: 'Dining', hint: 'Downtown & port side', text: 'Local eateries serve grilled seafood, barbecue, noodle dishes, and home-style Filipino meals. Confirm opening hours before you go.' },
+        { name: 'Accommodation', hint: 'Short walk away', text: 'Budget inns, hostels, mid-range hotels, and portside business hotels are within easy reach. There is no lodging inside the fort.' },
+        { name: 'Shops & conveniences', hint: 'City center', text: 'Convenience stores, banks with ATMs, and souvenir shops are scattered across downtown. Water and snacks are easy to find.' },
+        { name: 'Fuel & charging', hint: 'City streets', text: 'Petrol stations operate on major city routes; EV charging points are gradually appearing in Cebu City. Check your app for the nearest one.' }
+      ]
+    },
     food: {
       eyebrow: 'Nearby dining',
       title: 'After the stone, eat.',
-      lede: 'A few practical stops on the downtown/port side. Always confirm current restaurant opening hours before going.',
+      lede: 'A neutral taste of downtown Cebu—we describe food types only, never particular restaurants. Confirm current opening hours before going.',
       items: [
-        { name: 'KKD STK + BBQ', style: 'Grilled · seafood · Filipino', note: 'A practical stop near Fort San Pedro for grilled seafood, barbecue, and classic Filipino dishes.' },
-        { name: 'Manila Foodshoppe', style: 'Chinese–Filipino', note: 'An old-school downtown favorite for noodles, dim sum, and family-style meals.' },
-        { name: 'Alvar’s Food Haus', style: 'Home-style · budget', note: 'Simple, budget-friendly food near the port area; good if you want a quick local meal.' }
+        { name: 'Grilled seafood & Filipino barbecue', style: 'Inihaw · casual', note: 'Grilled fish, squid, pork and chicken skewers, and classic Filipino barbecue served at streetside and casual eateries.' },
+        { name: 'Noodles, dim sum & Chinese–Filipino', style: 'Wok · family-style', note: 'Wonton noodles, pancit, dim sum, and family-style rice-and-meat dishes from the city\'s Chinese–Filipino dining tradition.' },
+        { name: 'Home-style Filipino meals', style: 'Lutong-bahay · budget', note: 'Daily cooked viands, rice meals, and soups in the affordable "lutong-bahay" tradition found across the downtown.' }
       ]
     },
     itinerary: {
@@ -433,9 +396,21 @@ export const translations: Record<Locale, Translation> = {
     },
     map: {
       eyebrow: 'Location',
+      title: 'Location & How to Visit Fort San Pedro in Cebu City',
       address: 'A. Pigafetta Street,<br />Cebu City 6000',
       note: 'Beside Plaza Independencia and near Cebu Pier 1.',
       iframeTitle: 'Map of Fort San Pedro, Cebu City'
+    },
+    sources: {
+      eyebrow: 'Sources',
+      title: 'Official sources & references.',
+      lede: 'For official updates and regional tourism information, visit:',
+      items: [
+        { name: 'Philippines Department of Tourism', url: 'https://beta.tourism.gov.ph/', label: 'Philippines Official Tourism Portal' },
+        { name: 'Cebu City Government', url: 'https://www.cebucity.gov.ph/', label: 'Cebu City official website' },
+        { name: 'National Museum of the Philippines', url: 'https://www.nationalmuseum.gov.ph/', label: 'National Museum official website' },
+        { name: 'Fort San Pedro on Google Maps', url: 'https://maps.app.goo.gl/MdpB9LcfKuXbGCmk8', label: 'View listing & reviews' }
+      ]
     },
     faq: {
       eyebrow: 'FAQ',
@@ -446,7 +421,11 @@ export const translations: Record<Locale, Translation> = {
         { q: 'How much time is enough for a visit?', a: 'For most visitors, 45–90 minutes is sufficient for the courtyard, ramparts, cannons, and displays. Add time if you also include Plaza Independencia and other downtown heritage sites.' },
         { q: 'Can I walk here from Magellan’s Cross?', a: 'Yes. Fort San Pedro, Plaza Independencia, Basilica del Santo Niño, and Magellan’s Cross are all within the same downtown heritage area and are practically combined in a single walking route.' },
         { q: 'Is there parking available?', a: 'Parking exists around Plaza Independencia, but space is limited and can fill up. Taxi/Grab or arriving early are usually easier options.' },
-        { q: 'Is Fort San Pedro suitable for children and seniors?', a: 'The lower courtyard is reasonably accessible, but some staircases and rampart sections have uneven stone surfaces. Take your time and ask for assistance if needed.' }
+        { q: 'Is Fort San Pedro suitable for children and seniors?', a: 'The lower courtyard is reasonably accessible, but some staircases and rampart sections have uneven stone surfaces. Take your time and ask for assistance if needed.' },
+        { q: 'Is there a museum inside Fort San Pedro?', a: 'Yes. The fort houses a small museum displaying historical artifacts, paintings, and memorabilia from the Spanish colonial period, alongside its garden courtyard and vintage cannons.' },
+        { q: 'Can I take photos inside the fort?', a: 'Photography is generally allowed in the courtyard and museum areas. Some exhibits may restrict flash photography; respect posted signs and museum staff.' },
+        { q: 'Are there restrooms, shops, and dining options near the fort?', a: 'Yes. Public restrooms are available inside the fort complex, and around Plaza Independencia and the downtown area you will find convenience stores, eateries, banks with ATMs, and lodging in various price ranges. As a non-commercial guide we describe types only, not specific establishments.' },
+        { q: 'What is the history behind Fort San Pedro?', a: 'It began as a wooden defense for the first Spanish settlement founded by Miguel López de Legazpi in 1565, was rebuilt in coral stone around 1738 as a triangular fortress with three bastions, and has since served as a garrison, briefly as a city zoo, and today as a garden and museum.' }
       ]
     },
     footer: {
@@ -459,37 +438,42 @@ export const translations: Record<Locale, Translation> = {
     },
     languageSwitcher: {
       label: 'Language selector',
-      ceb: 'Cebuano',
       en: 'English',
       fil: 'Filipino'
     },
     alternates: {
-      ceb: '/',
       en: '/en/',
-      fil: '/fil/'
+      fil: '/'
     }
   },
   fil: {
     meta: {
-      title: 'Fort San Pedro Cebu | Gabay sa Pagbisita',
-      description: 'Gabay sa Filipino tungkol sa Fort San Pedro: entrance fee, oras, transportasyon, paradahan, kalapit na kainan, heritage stops, mapa at checklist ng itinerary.',
-      ogTitle: 'Fort San Pedro Cebu | Gabay sa Pagbisita',
-      ogDescription: 'Plano ang iyong pagbisita sa pinakakilalang Spanish-era stone fort sa Cebu City.',
+      title: 'Fort San Pedro (Lungsod ng Cebu) - Gabay sa Pagbisita at Lokasyon',
+      description: 'Tuklasin ang Fort San Pedro, ang iconic na Spanish-era triangular stone fortress sa Lungsod ng Cebu, Pilipinas, mula pa noong 1738. Tingnan ang mapa ng lokasyon, oras ng pagbubukas, kalapit na Basilica del Santo Niño, at mga travel tips.',
+      ogTitle: 'Fort San Pedro - Gabay sa Paglalakbay sa Lungsod ng Cebu',
+      ogDescription: 'Gabay sa pagbisita sa Fort San Pedro sa Lungsod ng Cebu, Cebu, Pilipinas.',
       ogLocale: 'fil_PH',
       htmlLang: 'fil'
     },
     schema: {
       attractionName: 'Fort San Pedro',
       attractionAlternateName: 'Kuta ng San Pedro',
-      attractionDescription: 'Isang makasaysayang tatsulok na kuta sa Cebu City, malapit sa Plaza Independencia at daungan.'
+      attractionDescription: 'Isang triangular na stone fortress na itinayo ng mga Espanyol sa Lungsod ng Cebu, Pilipinas, mula pa noong 1738, na ngayon ay may hardin at museo.',
+      attractionType: 'Kuta (Fortress)',
+      ratingValue: '4.2',
+      reviewCount: '8047'
     },
     nav: {
       skipToContent: 'Laktawan patungo sa nilalaman',
+      navLabel: 'Pangunahing nabigasyon',
       homeLabel: 'Fort San Pedro home',
       siteTagline: 'Cebu · Sugbo',
+      navOverview: 'Pangkalahatang-ideya',
+      navHistory: 'Kasaysayan',
       navVisit: 'Pagbisita',
       navTransport: 'Transportasyon',
       navNearby: 'Malapit',
+      navFacilities: 'Mga Pasilidad',
       navItinerary: 'Aking itinerary'
     },
     hero: {
@@ -502,6 +486,24 @@ export const translations: Record<Locale, Translation> = {
       statRegularLabel: 'Regular',
       statHoursLabel: 'Kasalukuyang oras',
       statDurationLabel: 'Inirerekomenda'
+    },
+    overview: {
+      eyebrow: 'Pangkalahatang-ideya',
+      title: 'Tungkol sa Fort San Pedro',
+      breadcrumbLabel: 'Narito ka',
+      crumbs: ['Fort San Pedro', 'Lungsod ng Cebu', 'Cebu', 'Pilipinas'],
+      intro: 'Maligayang pagdating sa <strong>Fort San Pedro</strong>, kinikilala bilang sentral na Spanish-era fortress ng <strong>Lungsod ng Cebu</strong>. Matatagpuan sa gitna ng <strong>Cebu</strong>, <strong>Pilipinas</strong>, ang destinasyong ito ay nagsisilbing pangunahing hub para sa mga manlalakbay na bumibisita sa rehiyon.',
+      typeLabel: 'Uri',
+      typeValue: 'Kuta',
+      ratingLabel: 'Rating',
+      ratingValue: '4.2 · 8,047 review',
+      hoursLabel: 'Oras',
+      hoursValue: '08:00 – 17:00',
+      addressLabel: 'Address',
+      addressValue: '7WR4+X7J, A. Pigafetta Street, Lungsod ng Cebu 6000, Pilipinas',
+      nearbyTitle: 'Mga Landmark at Atraksyon Malapit sa Fort San Pedro',
+      nearbyText: 'Kapag bumibisita sa <strong>Fort San Pedro</strong>, madaling ma-explore ng mga bisita ang mga kalapit na makasaysayang landmark at punto ng interes, kabilang ang <strong>Basilica del Santo Niño</strong> at <strong>Magellan’s Cross</strong>.',
+      mapsLabel: 'Tingnan sa Google Maps'
     },
     whyVisit: {
       eyebrow: 'Bakit pumunta rito',
@@ -573,14 +575,50 @@ export const translations: Record<Locale, Translation> = {
         { id: 'casa-gorordo', name: 'Casa Gorordo Museum', type: 'Museo · Parian', text: 'Isang heritage house na nagpapakita ng buhay-pambahay at arkitektura ng lumang Cebu.', saveButton: 'I-save sa itinerary' }
       ]
     },
+    history: {
+      eyebrow: 'Kasaysayan',
+      title: 'Apat na siglo sa isang maliit na kuta.',
+      lede: 'Mula sa kahoy na depensa hanggang sa batong kuta, ang Fort San Pedro ay saksi sa mahigit apat na siglo ng kuwento ng Cebu.',
+      timeline: [
+        { year: '1565', title: 'Unang yapak ng Espanya', text: 'Noong 1565, dumating si conquistador Miguel López de Legazpi sa Cebu at itinatag ang unang permanenteng Spanish settlement sa Pilipinas. Isang simpleng kahoy na kuta ang itinayo sa lugar na ito bilang unang depensa ng pamayanan.' },
+        { year: '1738', title: 'Muling itinayo sa bato', text: 'Ang kahoy na depensa ay napalitan ng batong-koral na kuta. Ang tatsulok na disenyo nito—tatlong balwarteng pinangalanang La Concepción, Ignacio de Loyola, at San Miguel—ay nagpapakita ng arkitekturang depensiba ng panahon ng kolonyal na Espanyol.' },
+        { year: '1898', title: 'Dumating ang rebolusyon', text: 'Sa konteksto ng Rebolusyong Pilipino, kinuha ng mga rebolusyonaryong pwersa ang kuta mula sa garison ng mga Espanyol noong 1898, sa pagtatapos ng daan-daang taon ng kolonyal na pamamahala.' },
+        { year: '1900s–1940s', title: 'Bagong garison', text: 'Sa panahon ng Amerikanong kolonyal, nagsilbi ang kuta bilang kampo militar; noong Ikalawang Digmaang Pandaigdig muli itong ginamit bilang garison, at pagkatapos ng digmaan ay pansamantalang naging zoo ng Lungsod ng Cebu.' },
+        { year: 'Ngayon', title: 'Parke, museo, hardin', text: 'Nirestauro sa mga nagdaang dekada, ang kuta ay bukas na ngayon sa publiko bilang hardin, maliit na museo, at simbolo ng mayamang kasaysayan ng Cebu.' }
+      ]
+    },
+    stories: {
+      eyebrow: 'Kuwento at alamat',
+      title: 'Higit pa sa mga pader.',
+      lede: 'Ang mga kuta ay hindi lamang bato—nagtatanim din sila ng mga kuwento. Ang ilan ay naitala sa kasaysayan; ang iba ay buhay sa mga alamat ng mga taga-Cebu.',
+      items: [
+        { kind: 'Nakasulat sa kasaysayan', title: 'Tatlong balwarte, tatlong santo', text: 'Ang tatlong sulok ng kuta ay pinangalanang La Concepción, Ignacio de Loyola, at San Miguel—mga relihiyosong pangalan na nagpapakita kung paanong ang pananampalataya at depensa ay magkaugnay sa kolonyal na mundo ng Espanya.' },
+        { kind: 'Alamat ng mga taga-Cebu', title: 'Ang nakatagong tunel', text: 'Ayon sa lokal na alamat, may lihim na tunel mula sa kuta patungo sa lugar ng simbahan ng Santo Niño. Wala pang nakukumpirmang daanan ang natagpuan, ngunit nananatili pa rin ang kuwento bilang isa sa mga paboritong "paano kung" ng Cebu.' },
+        { kind: 'Nakasulat sa kasaysayan', title: 'Korales mula sa tubig ng Cebu', text: 'Ang mga pader ay itinayo mula sa batong-koral na mina sa malapit at lime mortar—mga materyales na nagbibigay sa kuta ng maputlang texture at direktang nag-uugnay sa mga baybayin ng isla.' },
+        { kind: 'Alaala ng mga taga-Cebu', title: 'Mula kuta hanggang zoo', text: 'Naaalala ng ilang nakatatandang Cebuano ang panahon na ang courtyard ng kuta ay pansamantalang nagsilbing maliit na zoo ng lungsod, bago ito nirestauro bilang hardin at museo.' }
+      ]
+    },
+    facilities: {
+      eyebrow: 'Mga pasilidad',
+      title: 'Ano ang nasa paligid.',
+      lede: 'Isang neutral na gabay sa mga serbisyong malapit—mga uri lamang ang inililista namin, hindi mga partikular na tindahan o establisimyento.',
+      items: [
+        { name: 'Banyo / palikuran', hint: 'Nasa loob ng kuta', text: 'May pampublikong palikuran sa loob ng fort complex. Maaaring hindi pantay ang mga lumang batong daanan, kaya maglaan ng oras.' },
+        { name: 'Paradahan', hint: 'Plaza Independencia', text: 'Limitado ang paradahan sa paligid ng Plaza Independencia at mabilis mapuno. Karaniwang mas madali ang taxi o ride-hailing.' },
+        { name: 'Kainan', hint: 'Downtown at port side', text: 'Ang mga lokal na kainan ay naghahain ng inihaw na seafood, barbecue, pansit, at lutong-bahay na pagkaing Pilipino. Kumpirmahin ang oras bago pumunta.' },
+        { name: 'Tuluyan', hint: 'Maikling lakad', text: 'May mga budget inn, hostel, mid-range hotel, at portside business hotel sa madaling abot ng kuta. Walang tuluyan sa loob ng fort.' },
+        { name: 'Tindahan at convenience', hint: 'Sentro ng lungsod', text: 'May mga convenience store, bangko na may ATM, at souvenir shop sa buong downtown. Madaling makahanap ng tubig at meryenda.' },
+        { name: 'Gasolina at pagsingil', hint: 'Mga lansangan ng lungsod', text: 'May mga gasolinahan sa mga pangunahing ruta ng lungsod; unti-unti nang lumalabas ang EV charging points sa Lungsod ng Cebu. I-check ang iyong app para sa pinakamalapit.' }
+      ]
+    },
     food: {
       eyebrow: 'Kalapit na kainan',
       title: 'Pagkatapos ng bato, kumain.',
-      lede: 'Ilang praktikal na hinto sa downtown/port side. Laging kumpirmahin ang kasalukuyang oras ng pagbubukas ng restaurant bago pumunta.',
+      lede: 'Isang neutral na pagtikim ng downtown Cebu—mga uri lamang ng pagkain ang inilalarawan namin, hindi mga partikular na restaurant. Kumpirmahin ang oras bago pumunta.',
       items: [
-        { name: 'KKD STK + BBQ', style: 'Inihaw · seafood · Filipino', note: 'Praktikal na hinto malapit sa Fort San Pedro para sa inihaw na seafood, barbecue, at mga klasikong pagkaing Filipino.' },
-        { name: 'Manila Foodshoppe', style: 'Chinese–Filipino', note: 'Isang lumang paborito sa downtown para sa noodles, dim sum, at family-style na pagkain.' },
-        { name: 'Alvar’s Food Haus', style: 'Lutong-bahay · budget', note: 'Simple at budget-friendly na pagkain malapit sa port area; mainam kung gusto mo ng mabilis na lokal na pagkain.' }
+        { name: 'Inihaw na seafood at Filipino barbecue', style: 'Inihaw · casual', note: 'Inihaw na isda, pusit, baboy at manok skewers, at klasikong Filipino barbecue na inihahain sa mga kainan sa kalsada at casual eateries.' },
+        { name: 'Noodles, dim sum at Chinese–Filipino', style: 'Wok · family-style', note: 'Wonton noodles, pancit, dim sum, at family-style na kanin-at-ulam mula sa Chinese–Filipino dining tradition ng lungsod.' },
+        { name: 'Lutong-bahay na pagkaing Filipino', style: 'Lutong-bahay · budget', note: 'Araw-araw na nilutong ulam, rice meals, at sabaw sa abot-kayang tradisyon ng "lutong-bahay" na matatagpuan sa buong downtown.' }
       ]
     },
     itinerary: {
@@ -595,9 +633,21 @@ export const translations: Record<Locale, Translation> = {
     },
     map: {
       eyebrow: 'Lokasyon',
+      title: 'Lokasyon at Paano Bisitahin ang Fort San Pedro sa Lungsod ng Cebu',
       address: 'A. Pigafetta Street,<br />Lungsod ng Cebu 6000',
       note: 'Sa tabi ng Plaza Independencia at malapit sa Cebu Pier 1.',
       iframeTitle: 'Mapa ng Fort San Pedro, Lungsod ng Cebu'
+    },
+    sources: {
+      eyebrow: 'Mga Pinagmulan',
+      title: 'Opisyal na mga pinagmulan at sanggunian.',
+      lede: 'Para sa opisyal na mga update at impormasyong panturismo sa rehiyon, bisitahin ang:',
+      items: [
+        { name: 'Philippines Department of Tourism', url: 'https://beta.tourism.gov.ph/', label: 'Opisyal na tourism portal ng Pilipinas' },
+        { name: 'Cebu City Government', url: 'https://www.cebucity.gov.ph/', label: 'Opisyal na website ng Lungsod ng Cebu' },
+        { name: 'National Museum of the Philippines', url: 'https://www.nationalmuseum.gov.ph/', label: 'Opisyal na website ng National Museum' },
+        { name: 'Fort San Pedro sa Google Maps', url: 'https://maps.app.goo.gl/MdpB9LcfKuXbGCmk8', label: 'Tingnan ang listing at mga review' }
+      ]
     },
     faq: {
       eyebrow: 'FAQ',
@@ -608,7 +658,11 @@ export const translations: Record<Locale, Translation> = {
         { q: 'Gaano katagal ang sapat para sa pagbisita?', a: 'Para sa karamihan, 45–90 minuto ay sapat na para sa courtyard, ramparts, mga kanyon, at mga display. Dagdagan ang oras kung isasama mo rin ang Plaza Independencia at iba pang downtown heritage sites.' },
         { q: 'Maaari bang lakarin mula sa Magellan’s Cross?', a: 'Oo. Ang Fort San Pedro, Plaza Independencia, Basilica del Santo Niño, at Magellan’s Cross ay nasa parehong downtown heritage area at praktikal na pagsamahin sa iisang walking route.' },
         { q: 'Mayroon bang paradahan?', a: 'May paradahan sa paligid ng Plaza Independencia, ngunit limitado ang espasyo at maaaring mapuno. Karaniwang mas madali ang taxi/Grab o pagdating nang maaga.' },
-        { q: 'Angkop ba ang Fort San Pedro para sa bata at senior?', a: 'Ang mababang courtyard ay madaling ma-access, ngunit ang ilang hagdan at rampart section ay may hindi pantay na ibabaw ng bato. Maglaan ng oras at humingi ng tulong kung kinakailangan.' }
+        { q: 'Angkop ba ang Fort San Pedro para sa bata at senior?', a: 'Ang mababang courtyard ay madaling ma-access, ngunit ang ilang hagdan at rampart section ay may hindi pantay na ibabaw ng bato. Maglaan ng oras at humingi ng tulong kung kinakailangan.' },
+        { q: 'May museo ba sa loob ng Fort San Pedro?', a: 'Oo. Ang kuta ay may maliit na museo na nagpapakita ng mga makasaysayang artifact, painting, at memorabilia mula sa panahon ng kolonyal na Espanyol, kasama ang garden courtyard at mga lumang kanyon.' },
+        { q: 'Maaari bang kumuha ng litrato sa loob ng kuta?', a: 'Karaniwang pinapayagan ang pagkuha ng litrato sa courtyard at museo. Ang ilang exhibit ay maaaring magbawal ng flash photography; sundin ang mga nakapaskil na paunawa at kawani ng museo.' },
+        { q: 'May banyo, tindahan, at mga kainan ba malapit sa kuta?', a: 'Oo. May pampublikong palikuran sa loob ng fort complex, at sa paligid ng Plaza Independencia at downtown ay may mga convenience store, kainan, bangko na may ATM, at tuluyan sa iba\'t ibang presyo. Bilang non-commercial guide, mga uri lamang ang inilalarawan namin, hindi mga partikular na establisimyento.' },
+        { q: 'Ano ang kasaysayan sa likod ng Fort San Pedro?', a: 'Nagsimula ito bilang kahoy na depensa para sa unang Spanish settlement na itinatag ni Miguel López de Legazpi noong 1565, muling itinayo sa batong-koral noong 1738 bilang tatsulok na kuta na may tatlong balwarte, at mula noon ay nagsilbing garison, pansamantalang zoo ng lungsod, at ngayon bilang hardin at museo.' }
       ]
     },
     footer: {
@@ -621,14 +675,12 @@ export const translations: Record<Locale, Translation> = {
     },
     languageSwitcher: {
       label: 'Pamimili ng wika',
-      ceb: 'Cebuano',
       en: 'English',
       fil: 'Filipino'
     },
     alternates: {
-      ceb: '/',
       en: '/en/',
-      fil: '/fil/'
+      fil: '/'
     }
   }
 };

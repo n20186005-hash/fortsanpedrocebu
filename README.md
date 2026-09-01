@@ -1,6 +1,6 @@
 # Fort San Pedro Cebu — visitor guide
 
-Single-page Cebuano attraction website built with Astro, Tailwind CSS, and TypeScript for deployment as Cloudflare Workers Static Assets.
+Single-page bilingual attraction website (Filipino default at `/`, English at `/en/`) built with Astro, Tailwind CSS, and TypeScript for deployment as Cloudflare Workers Static Assets. Includes structured data (TouristAttraction / FAQPage / BreadcrumbList / WebSite JSON-LD), an official-sources section, and PWA support (manifest + service worker).
 
 ## Runtime and package versions
 
@@ -14,7 +14,7 @@ Single-page Cebuano attraction website built with Astro, Tailwind CSS, and TypeS
 
 ## One-place domain configuration
 
-Edit only the existing `DEPLOYMENT_SITE` constant in `astro.config.mjs` when the production domain is known. Until then, leave it as `''`. The project still builds. Canonical and `og:url` are omitted, structured-data absolute URLs are omitted, and the sitemap integration is disabled. Once a real site URL is entered, canonical/OG/JSON-LD/sitemap URLs derive from Astro's `site` value automatically.
+The production domain is set once in `DEPLOYMENT_SITE` inside `astro.config.mjs` (`https://fortsanpedrocebu.com`). Canonical, `og:url`, hreflang, JSON-LD absolute URLs, and the sitemap all derive from Astro's `site` value automatically. Change only that single constant if the domain ever moves.
 
 ## Local development
 

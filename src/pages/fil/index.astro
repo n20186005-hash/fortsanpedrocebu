@@ -1,4 +1,18 @@
 ---
-import PageLayout from '../../components/PageLayout.astro';
+// Filipino (the site's default language) lives at "/".
+// This page only exists to redirect the old /fil/ URL to the default
+// page, preventing duplicate content between / and /fil/.
 ---
-<PageLayout locale="fil" />
+<!doctype html>
+<html lang="fil">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fort San Pedro Cebu - Gabay sa Pagbisita</title>
+    <link rel="canonical" href="/" />
+    <meta http-equiv="refresh" content="0; url=/" />
+  </head>
+  <body>
+    <p><a href="/">Fort San Pedro Cebu - Gabay sa Pagbisita</a></p>
+  </body>
+</html>
