@@ -1,0 +1,232 @@
+---
+import '../styles/global.css';
+import { translations, type Locale } from '../i18n/translations';
+import { articles, articlePath, type Article } from '../i18n/articles';
+
+const { locale, article } = Astro.props as { locale: Locale; article: Article };
+const t = translations[locale];
+const a = article.translations[locale];
+
+const site = Astro.site;
+const path = articlePath(locale, article);
+const canonical = site ? new URL(path, site).href : path;
+const abs = (value: string) => (site ? new URL(value, site).href : value);
+
+const locales: Locale[] = ['en', 'fil', 'ja', 'zh'];
+const hreflangTags: Record<Locale, string> = { en: 'en', fil: 'fil', ja: 'ja', zh: 'zh-Hant' };
+const localeFlags: Record<Locale, string> = { en: '🇬🇧', fil: '🇵🇭', ja: '🇯🇵', zh: '🇹🇼' };
+
+const homePath = t.alternates[locale];
+const homeUrl = abs(homePath);
+const ogImage = abs(article.image);
+const imageAlt = t.images[article.imageAltKey];
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${canonical}#article`,
+  headline: a.h1,
+  description: a.description,
+  image: [ogImage],
+  datePublished: article.datePublished,
+  dateModified: article.dateModified,
+  inLanguage: t.meta.htmlLang,
+  author: {
+    '@type': 'Organization',
+    name: 'Fort San Pedro Cebu - Visitor Guide',
+    url: homeUrl
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Fort San Pedro Cebu - Visitor Guide',
+    url: homeUrl
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  isPartOf: { '@type': 'WebSite', '@id': site ? new URL('/#website', site).href : '#website' },
+  about: { '@type': 'TouristAttraction', name: t.schema.attractionName, url: homeUrl }
+};
+
+const guidesLabelByLocale: Record<Locale, string> = {
+  en: 'Guides',
+  fil: 'Mga Gabay',
+  ja: 'ガイド',
+  zh: '旅行指南'
+};
+const guidesPath = (code: Locale) => (code === 'en' ? '/guides/' : `/${code}/guides/`);
+const guidesUrl = abs(guidesPath(locale));
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.schema.attractionName, item: homeUrl },
+    { '@type': 'ListItem', position: 2, name: guidesLabelByLocale[locale], item: guidesUrl },
+    { '@type': 'ListItem', position: 3, name: a.h1, item: canonical }
+  ]
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: a.faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } }))
+};
+
+const related = articles.filter((entry) => entry.id !== article.id);
+---
+<!doctype html>
+<html lang={t.meta.htmlLang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{a.title}</title>
+    <meta name="description" content={a.description} />
+    <meta name="theme-color" content="#193325" />
+    <link rel="canonical" href={canonical} />
+    {locales.map((code) => (
+      <link rel="alternate" hreflang={hreflangTags[code]} href={abs(articlePath(code, article))} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={abs(articlePath('en', article))} />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={a.title} />
+    <meta property="og:description" content={a.description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={t.meta.ogLocale} />
+    <meta property="article:published_time" content={article.datePublished} />
+    <meta property="article:modified_time" content={article.dateModified} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={a.title} />
+    <meta name="twitter:description" content={a.description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(articleJsonLd)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(faqJsonLd)}></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HXM22WWPKP');
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.nav.skipToContent}</a>
+
+    <header class="bg-[var(--moss-deep)] text-white">
+      <div class="section-shell flex flex-wrap items-center justify-between gap-4 py-5">
+        <a href={homePath} class="flex items-center gap-3" aria-label={t.nav.homeLabel}>
+          <img src="/brand/logo-mark.svg" alt="" width="42" height="42" class="h-10 w-10" />
+          <span class="leading-none">
+            <span class="heritage-serif block text-lg font-bold">{t.schema.attractionName}</span>
+            <span class="mt-1 block text-[10px] font-bold uppercase tracking-[.2em] text-white/65">{t.nav.siteTagline}</span>
+          </span>
+        </a>
+        <nav aria-label={t.nav.navLabel} class="flex items-center gap-4 text-sm font-semibold">
+          <a class="rounded-full border border-white/35 bg-black/15 px-4 py-2 backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]" href={homePath}>{a.backToGuideLabel}</a>
+          <div class="relative">
+            <details class="group">
+              <summary class="flex cursor-pointer list-none items-center gap-2 rounded-full border border-white/35 bg-black/15 px-4 py-2 text-sm font-semibold backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span>{t.languageSwitcher[locale]}</span>
+                <span class="transition group-open:rotate-180">▾</span>
+              </summary>
+              <div class="absolute right-0 z-40 mt-2 w-44 overflow-hidden rounded-xl border border-white/25 bg-[#10251c]/95 py-1 backdrop-blur">
+                {locales.map((code) => (
+                  <a href={articlePath(code, article)} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${code === locale ? 'bg-white/10 text-[#e6c989]' : ''}`}>{localeFlags[code]} {t.languageSwitcher[code]}</a>
+                ))}
+              </div>
+            </details>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article>
+        <section class="section-shell py-12 md:py-16">
+          <nav aria-label={t.overview.breadcrumbLabel} class="mb-6">
+            <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-bold uppercase tracking-[.15em] text-[#7c6d57]">
+              <li><a class="hover:text-[var(--rust)]" href={homePath}>{t.schema.attractionName}</a></li>
+              <li class="flex items-center gap-2"><span class="text-[#c6b28e]" aria-hidden="true">/</span><a class="hover:text-[var(--rust)]" href={guidesPath(locale)}>{guidesLabelByLocale[locale]}</a></li>
+            </ol>
+          </nav>
+          <h1 class="max-w-4xl text-[clamp(2rem,5.4vw,4.2rem)] leading-[1.02] text-[var(--moss-deep)]">{a.h1}</h1>
+          <p class="mt-4 text-xs font-bold uppercase tracking-[.18em] text-[#7c6d57]">{a.updatedLabel}: <time datetime={article.dateModified}>{article.dateModified}</time></p>
+          <p class="lede mt-6 max-w-3xl">{a.intro}</p>
+        </section>
+
+        <figure class="section-shell image-frame aspect-[16/9]">
+          <img src={article.image} alt={imageAlt} class="h-full w-full object-cover" fetchpriority="high" />
+        </figure>
+
+        <div class="section-shell grid gap-12 py-14 md:py-20 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+          <div class="max-w-3xl">
+            {a.sections.map((section) => (
+              <section class="mb-12">
+                <h2 class="mt-0 text-[clamp(1.6rem,3.4vw,2.4rem)] leading-tight text-[var(--moss-deep)]">{section.heading}</h2>
+                {section.paragraphs?.map((paragraph) => (
+                  <p class="mt-4 leading-8 text-[#4d534a]">{paragraph}</p>
+                ))}
+                {section.items && (
+                  <ol class="mt-6 space-y-4">
+                    {section.items.map((item) => (
+                      <li class="border-l-2 border-[var(--gold)] pl-5">
+                        <h3 class="text-xl font-bold text-[var(--moss-deep)]">{item.name}</h3>
+                        <p class="mt-2 leading-7 text-[#5f665d]">{item.text}</p>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </section>
+            ))}
+
+            <section id="faq" class="mb-12">
+              <h2 class="text-[clamp(1.6rem,3.4vw,2.4rem)] leading-tight text-[var(--moss-deep)]">{t.faq.title}</h2>
+              <div class="mt-6 divide-y divide-[#d8cab0] border-y border-[#d8cab0]">
+                {a.faq.map((item) => (
+                  <details class="group py-5">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-extrabold text-[var(--moss-deep)]"><span>{item.q}</span><span class="text-2xl font-light transition group-open:rotate-45">+</span></summary>
+                    <p class="max-w-3xl pb-2 pt-4 leading-7 text-[#626860]">{item.a}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <aside class="fort-card p-6 lg:sticky lg:top-6">
+            <p class="eyebrow">{a.relatedLabel}</p>
+            <ul class="mt-5 space-y-4">
+              {related.map((entry) => (
+                <li>
+                  <a class="group block" href={articlePath(locale, entry)}>
+                    <strong class="block text-base font-extrabold leading-6 text-[var(--moss-deep)] group-hover:text-[var(--rust)]">{entry.translations[locale].title}</strong>
+                    <span class="mt-2 block text-sm leading-6 text-[#5f665d]">{entry.translations[locale].description}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a class="mt-6 inline-flex items-center gap-2 rounded-full border border-[var(--moss)] px-5 py-2.5 text-sm font-extrabold text-[var(--moss)] transition hover:bg-[var(--moss)] hover:text-white" href={homePath}>{a.backToGuideLabel}</a>
+          </aside>
+        </div>
+      </article>
+    </main>
+
+    <footer class="bg-[#14251c] text-white">
+      <div class="battlement h-4 bg-transparent opacity-70"></div>
+      <div class="section-shell grid gap-10 py-14 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <div class="flex items-center gap-3"><img src="/brand/logo-mark.svg" alt="" width="46" height="46" /><div><div class="heritage-serif text-xl font-bold">{t.footer.title}</div><div class="mt-1 text-[10px] font-bold uppercase tracking-[.18em] text-white/45">{t.footer.subtitle}</div></div></div>
+          <p class="mt-5 max-w-2xl text-xs leading-6 text-white/48">{t.footer.disclaimer}</p>
+        </div>
+        <a href={homePath} class="text-sm font-bold text-[#e6c989]">{t.footer.backToTop}</a>
+      </div>
+    </footer>
+  </body>
+</html>

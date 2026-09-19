@@ -1,4 +1,18 @@
 ---
-import PageLayout from '../../components/PageLayout.astro';
+// English is now the default language and lives at "/".
+// This page only exists to redirect the old /en/ URL to the default
+// page, preventing duplicate content between / and /en/.
 ---
-<PageLayout locale="en" />
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fort San Pedro Cebu - Visitor Guide</title>
+    <link rel="canonical" href="/" />
+    <meta http-equiv="refresh" content="0; url=/" />
+  </head>
+  <body>
+    <p><a href="/">Fort San Pedro Cebu - Visitor Guide</a></p>
+  </body>
+</html>

@@ -8,7 +8,11 @@ const DEPLOYMENT_SITE = 'https://fortsanpedrocebu.com';
 
 export default defineConfig({
   site: DEPLOYMENT_SITE || undefined,
-  integrations: DEPLOYMENT_SITE ? [sitemap()] : [],
+  // /en/ is a redirect stub only; keep it out of the sitemap so Google does not
+  // crawl a duplicate of the root page.
+  integrations: DEPLOYMENT_SITE
+    ? [sitemap({ filter: (page) => !page.includes('/en/') })]
+    : [],
   vite: {
     plugins: [tailwindcss()]
   }

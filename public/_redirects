@@ -1,0 +1,16 @@
+# Path-level redirects for Cloudflare Workers static assets.
+# Domain-level redirects (http -> https, www -> apex) cannot be expressed here;
+# enable them in the Cloudflare dashboard:
+#   SSL/TLS > Edge Certificates > Always Use HTTPS = On
+#   Rules > Redirect Rules or Bulk Redirects: www.fortsanpedrocebu.com/* -> https://fortsanpedrocebu.com/:splat (301)
+
+# English moved from /en/ to the site root (Search Console: /en/ was splitting
+# impressions and clicks away from the strongest URL).
+/en               /        301
+/en/              /        301
+
+# Normalize direct HTML requests onto the clean canonical URLs.
+/index.html       /        301
+/fil/index.html   /fil/    301
+/ja/index.html    /ja/     301
+/zh/index.html    /zh/     301

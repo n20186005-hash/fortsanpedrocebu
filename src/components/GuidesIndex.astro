@@ -1,0 +1,124 @@
+---
+import '../styles/global.css';
+import { translations, type Locale } from '../i18n/translations';
+import { articles, articlePath } from '../i18n/articles';
+
+const { locale } = Astro.props as { locale: Locale };
+const t = translations[locale];
+
+const site = Astro.site;
+const path = locale === 'en' ? '/guides/' : `/${locale}/guides/`;
+const canonical = site ? new URL(path, site).href : path;
+const abs = (value: string) => (site ? new URL(value, site).href : value);
+const homePath = t.alternates[locale];
+
+const locales: Locale[] = ['en', 'fil', 'ja', 'zh'];
+const hreflangTags: Record<Locale, string> = { en: 'en', fil: 'fil', ja: 'ja', zh: 'zh-Hant' };
+const localeFlags: Record<Locale, string> = { en: '🇬🇧', fil: '🇵🇭', ja: '🇯🇵', zh: '🇹🇼' };
+const guidesPath = (code: Locale) => (code === 'en' ? '/guides/' : `/${code}/guides/`);
+
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${canonical}#collection`,
+  url: canonical,
+  name: t.guides.title,
+  inLanguage: t.meta.htmlLang,
+  isPartOf: { '@type': 'WebSite', '@id': site ? new URL('/#website', site).href : '#website' },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: articles.map((article, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: abs(articlePath(locale, article)),
+      name: article.translations[locale].title
+    }))
+  }
+};
+---
+<!doctype html>
+<html lang={t.meta.htmlLang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t.guides.title}</title>
+    <meta name="description" content={t.guides.lede} />
+    <meta name="theme-color" content="#193325" />
+    <link rel="canonical" href={canonical} />
+    {locales.map((code) => (
+      <link rel="alternate" hreflang={hreflangTags[code]} href={abs(guidesPath(code))} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={abs('/guides/')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={t.guides.title} />
+    <meta property="og:description" content={t.guides.lede} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={t.meta.ogLocale} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(collectionJsonLd)}></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HXM22WWPKP');
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.nav.skipToContent}</a>
+
+    <header class="bg-[var(--moss-deep)] text-white">
+      <div class="section-shell flex flex-wrap items-center justify-between gap-4 py-5">
+        <a href={homePath} class="flex items-center gap-3" aria-label={t.nav.homeLabel}>
+          <img src="/brand/logo-mark.svg" alt="" width="42" height="42" class="h-10 w-10" />
+          <span class="leading-none">
+            <span class="heritage-serif block text-lg font-bold">{t.schema.attractionName}</span>
+            <span class="mt-1 block text-[10px] font-bold uppercase tracking-[.2em] text-white/65">{t.nav.siteTagline}</span>
+          </span>
+        </a>
+        <nav aria-label={t.nav.navLabel} class="flex items-center gap-4 text-sm font-semibold">
+          <a class="rounded-full border border-white/35 bg-black/15 px-4 py-2 backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]" href={homePath}>{t.footer.backToTop}</a>
+          <div class="relative">
+            <details class="group">
+              <summary class="flex cursor-pointer list-none items-center gap-2 rounded-full border border-white/35 bg-black/15 px-4 py-2 text-sm font-semibold backdrop-blur hover:bg-white hover:text-[var(--moss-deep)]">
+                <span>{t.languageSwitcher[locale]}</span>
+                <span class="transition group-open:rotate-180">▾</span>
+              </summary>
+              <div class="absolute right-0 z-40 mt-2 w-44 overflow-hidden rounded-xl border border-white/25 bg-[#10251c]/95 py-1 backdrop-blur">
+                {locales.map((code) => (
+                  <a href={guidesPath(code)} class={`block px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10 ${code === locale ? 'bg-white/10 text-[#e6c989]' : ''}`}>{localeFlags[code]} {t.languageSwitcher[code]}</a>
+                ))}
+              </div>
+            </details>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="section-shell py-14 md:py-20">
+      <p class="eyebrow">{t.guides.eyebrow}</p>
+      <h1 class="section-title mt-4">{t.guides.title}</h1>
+      <p class="lede mt-6 max-w-3xl">{t.guides.lede}</p>
+      <ul class="mt-12 grid gap-5 md:grid-cols-2">
+        {articles.map((article) => (
+          <li>
+            <a class="group flex h-full flex-col fort-card p-7 transition hover:bg-white" href={articlePath(locale, article)}>
+              <strong class="text-xl font-extrabold leading-7 text-[var(--moss-deep)] group-hover:text-[var(--rust)]">{article.translations[locale].title}</strong>
+              <span class="mt-3 text-sm leading-6 text-[#5f665d]">{article.translations[locale].description}</span>
+              <span class="mt-5 text-sm font-extrabold text-[var(--moss)]">{t.guides.readGuide} →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </main>
+
+    <footer class="bg-[#14251c] text-white">
+      <div class="battlement h-4 bg-transparent opacity-70"></div>
+      <div class="section-shell py-10">
+        <p class="max-w-2xl text-xs leading-6 text-white/48">{t.footer.disclaimer}</p>
+      </div>
+    </footer>
+  </body>
+</html>

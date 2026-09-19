@@ -1,0 +1,14 @@
+---
+import ArticleLayout from '../../../components/ArticleLayout.astro';
+import { articles, type Article } from '../../../i18n/articles';
+
+export function getStaticPaths() {
+  return articles.map((article) => ({
+    params: { slug: article.translations.fil.slug },
+    props: { article }
+  }));
+}
+
+const { article } = Astro.props as { article: Article };
+---
+<ArticleLayout locale="fil" article={article} />
